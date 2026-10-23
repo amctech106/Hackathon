@@ -9,7 +9,9 @@ Yeh boilerplate aapke kal ke hackathon ke liye mukammal taur par tayyar kiya gay
 ```text
 Hackathon/
 ├── index.html            # Landing / Dashboard page (Session check, User Greeting, Cheatsheet)
-├── auth.html             # Login & Sign-up page (Tabs, Show/Hide Password, Validation)
+├── login.html            # Dedicated Sign In (Login) page
+├── signup.html           # Dedicated Create Account (Sign Up) page
+├── auth.html             # Combined Tabbed Login & Sign-up page
 ├── css/
 │   └── style.css         # Modern responsive CSS, Variables, Buttons, Cards, Toast alerts
 ├── js/

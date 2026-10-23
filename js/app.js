@@ -4,6 +4,20 @@
 
 let currentUser = null;
 
+function getClient() {
+  if (window.supabaseClient) return window.supabaseClient;
+  if (typeof supabaseClient !== 'undefined' && supabaseClient) return supabaseClient;
+  if (typeof supabase !== 'undefined' && typeof SUPABASE_CONFIG !== 'undefined' && SUPABASE_CONFIG.url) {
+    try {
+      window.supabaseClient = supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+      return window.supabaseClient;
+    } catch (e) {
+      console.error('App init client error:', e);
+    }
+  }
+  return null;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   // Check if Supabase credentials are set
   const warningBanner = document.getElementById('supabase-warning-banner');
@@ -19,12 +33,17 @@ document.addEventListener('DOMContentLoaded', async () => {
   await checkAuthStatus();
 
   // Setup auth state change listener
-  if (supabaseClient && isSupabaseConfigured()) {
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-      console.log('Auth event:', event);
-      currentUser = session?.user || null;
-      updateAuthUI(currentUser);
-    });
+  const client = getClient();
+  if (client && isSupabaseConfigured()) {
+    try {
+      client.auth.onAuthStateChange((event, session) => {
+        console.log('Auth event:', event);
+        currentUser = session?.user || null;
+        updateAuthUI(currentUser);
+      });
+    } catch (e) {
+      console.warn('onAuthStateChange error:', e);
+    }
   }
 
   // Logout button handler
@@ -39,13 +58,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // 1. Check Auth Status
 async function checkAuthStatus() {
-  if (!supabaseClient || !isSupabaseConfigured()) {
+  const client = getClient();
+  if (!client || !isSupabaseConfigured()) {
     updateAuthUI(null);
     return;
   }
 
   try {
-    const { data: { session }, error } = await supabaseClient.auth.getSession();
+    const { data: { session }, error } = await client.auth.getSession();
     if (error) {
       console.error('Session error:', error);
       updateAuthUI(null);
@@ -90,9 +110,10 @@ function updateAuthUI(user) {
 
 // 3. Logout handler
 async function handleLogout() {
-  if (!supabaseClient) return;
+  const client = getClient();
+  if (!client) return;
   try {
-    const { error } = await supabaseClient.auth.signOut();
+    const { error } = await client.auth.signOut();
     if (error) throw error;
     Toast.success('Logged out successfully!');
     updateAuthUI(null);
@@ -105,13 +126,13 @@ async function handleLogout() {
 // ==============================================================================
 // 📦 READY-TO-USE SUPABASE CRUD TEMPLATE (Hackathon Quick-Start)
 // ==============================================================================
-// Kal hackathon me jo bhi table banayein (e.g. 'products', 'tasks', 'posts'),
-// aap neeche diye gaye functions directly use kar sakte hain:
 
 const Database = {
   // READ: Data get karna
   async getAll(tableName, orderBy = 'created_at', ascending = false) {
-    const { data, error } = await supabaseClient
+    const client = getClient();
+    if (!client) throw new Error('Supabase client not initialized');
+    const { data, error } = await client
       .from(tableName)
       .select('*')
       .order(orderBy, { ascending });
@@ -121,7 +142,9 @@ const Database = {
 
   // CREATE: Naya record add karna
   async create(tableName, recordData) {
-    const { data, error } = await supabaseClient
+    const client = getClient();
+    if (!client) throw new Error('Supabase client not initialized');
+    const { data, error } = await client
       .from(tableName)
       .insert([recordData])
       .select();
@@ -131,7 +154,9 @@ const Database = {
 
   // UPDATE: Record update karna
   async update(tableName, id, updateData) {
-    const { data, error } = await supabaseClient
+    const client = getClient();
+    if (!client) throw new Error('Supabase client not initialized');
+    const { data, error } = await client
       .from(tableName)
       .update(updateData)
       .eq('id', id)
@@ -142,7 +167,9 @@ const Database = {
 
   // DELETE: Record delete karna
   async delete(tableName, id) {
-    const { error } = await supabaseClient
+    const client = getClient();
+    if (!client) throw new Error('Supabase client not initialized');
+    const { error } = await client
       .from(tableName)
       .delete()
       .eq('id', id);

@@ -2,40 +2,75 @@
 // 🔐 AUTHENTICATION LOGIC (SUPABASE)
 // ==============================================================================
 
+// Helper to reliably get the active Supabase client instance
+function getClient() {
+  if (window.supabaseClient) {
+    return window.supabaseClient;
+  }
+  if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+    return supabaseClient;
+  }
+  // Try fallback initialization if CDN is present
+  if (typeof supabase !== 'undefined' && typeof SUPABASE_CONFIG !== 'undefined' && SUPABASE_CONFIG.url) {
+    try {
+      window.supabaseClient = supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.anonKey);
+      return window.supabaseClient;
+    } catch (e) {
+      console.error('Fallback init error:', e);
+    }
+  }
+  return null;
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+  const client = getClient();
+
   // 1. Check if user is already logged in
-  if (supabaseClient && isSupabaseConfigured()) {
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (session) {
-      // Already logged in, redirect to dashboard/home
-      window.location.href = 'index.html';
-      return;
+  if (client && isSupabaseConfigured()) {
+    try {
+      const { data: { session } } = await client.auth.getSession();
+      if (session) {
+        // Already logged in, redirect to dashboard/home
+        window.location.href = 'index.html';
+        return;
+      }
+    } catch (e) {
+      console.warn('Session check skipped:', e);
     }
   }
 
-  // 2. Tab switching logic (Sign In <-> Sign Up)
+  // 2. Tab switching logic (for combined auth.html if used)
   const tabButtons = document.querySelectorAll('.auth-tab-btn');
   const forms = {
     signin: document.getElementById('signin-form-wrapper'),
     signup: document.getElementById('signup-form-wrapper')
   };
 
-  tabButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      const target = btn.dataset.tab;
-      
-      tabButtons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+  if (tabButtons.length > 0 && forms.signin && forms.signup) {
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.dataset.tab;
+        
+        tabButtons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
 
-      if (target === 'signin') {
-        forms.signin.classList.remove('hidden');
-        forms.signup.classList.add('hidden');
-      } else {
-        forms.signin.classList.add('hidden');
-        forms.signup.classList.remove('hidden');
-      }
+        if (target === 'signin') {
+          forms.signin.classList.remove('hidden');
+          forms.signup.classList.add('hidden');
+        } else {
+          forms.signin.classList.add('hidden');
+          forms.signup.classList.remove('hidden');
+        }
+      });
     });
-  });
+
+    // Handle URL query parameter, e.g., auth.html?tab=signup
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('tab') === 'signup' || urlParams.get('mode') === 'signup') {
+      const signupTab = document.querySelector('.auth-tab-btn[data-tab="signup"]');
+      if (signupTab) signupTab.click();
+    }
+  }
 
   // Switch links inside cards (e.g., "Don't have an account? Sign up")
   document.querySelectorAll('[data-switch-to]').forEach(link => {
@@ -43,7 +78,12 @@ document.addEventListener('DOMContentLoaded', async () => {
       e.preventDefault();
       const target = link.dataset.switchTo;
       const targetTab = document.querySelector(`.auth-tab-btn[data-tab="${target}"]`);
-      if (targetTab) targetTab.click();
+      if (targetTab) {
+        targetTab.click();
+      } else {
+        // Fallback for separate pages
+        window.location.href = target === 'signup' ? 'signup.html' : 'login.html';
+      }
     });
   });
 
@@ -75,6 +115,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
+      const activeClient = getClient();
+      if (!activeClient) {
+        Toast.error('Supabase client initialize nahi ho saka. Page refresh karein.');
+        return;
+      }
+
       const email = document.getElementById('signin-email').value.trim();
       const password = document.getElementById('signin-password').value;
       const submitBtn = signinForm.querySelector('button[type="submit"]');
@@ -82,7 +128,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       setLoading(submitBtn, true, 'Signing In...');
 
       try {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
+        const { data, error } = await activeClient.auth.signInWithPassword({
           email,
           password
         });
@@ -116,6 +162,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
+      const activeClient = getClient();
+      if (!activeClient) {
+        Toast.error('Supabase client initialize nahi ho saka. Page refresh karein.');
+        return;
+      }
+
       const fullName = document.getElementById('signup-name').value.trim();
       const email = document.getElementById('signup-email').value.trim();
       const password = document.getElementById('signup-password').value;
@@ -135,7 +187,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       setLoading(submitBtn, true, 'Creating Account...');
 
       try {
-        const { data, error } = await supabaseClient.auth.signUp({
+        const { data, error } = await activeClient.auth.signUp({
           email,
           password,
           options: {
@@ -154,10 +206,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Agar Supabase par "Confirm Email" on hai tou session null hoga
         if (data.user && !data.session) {
-          Toast.success('Account ban gaya! Apni email check karein verification link ke liye.');
+          Toast.success('Account ban gaya! Agar email confirmation on hai tou email check karein, warna login karein.');
           signupForm.reset();
-          // Switch to signin tab
-          document.querySelector('.auth-tab-btn[data-tab="signin"]').click();
+          setTimeout(() => {
+            window.location.href = 'login.html';
+          }, 1500);
         } else {
           Toast.success('Account kamyabi se ban gaya! Redirecting...');
           setTimeout(() => {
@@ -186,9 +239,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         return;
       }
 
+      const activeClient = getClient();
+      if (!activeClient) {
+        Toast.error('Supabase client error.');
+        return;
+      }
+
       try {
-        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin + '/auth.html'
+        const { error } = await activeClient.auth.resetPasswordForEmail(email, {
+          redirectTo: window.location.origin + '/login.html'
         });
         if (error) {
           Toast.error(error.message);
@@ -204,6 +263,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Button loading state helper
 function setLoading(button, isLoading, text) {
+  if (!button) return;
   if (isLoading) {
     button.disabled = true;
     button.innerHTML = `<span class="btn-spinner"></span> ${text}`;
