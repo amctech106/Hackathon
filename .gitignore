@@ -1,0 +1,14 @@
+# Dependencies & environment
+.env
+.env.local
+node_modules/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# IDE / Editor
+.vscode/
+.idea/
+*.suo
+*.user

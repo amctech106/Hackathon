@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hackathon Starter Kit - HTML, CSS, JS & Supabase</title>
+
+  <!-- Google Fonts: Plus Jakarta Sans & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome 6 Icons CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Supabase Missing Config Notice -->
+  <div id="supabase-warning-banner" class="warning-banner hidden">
+    <i class="fa-solid fa-triangle-exclamation"></i>
+    <span><strong>Supabase Config Missing:</strong> Open <code>js/config.js</code> and enter your Supabase URL & Anon Key to enable live database & auth!</span>
+  </div>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo">
+        <span class="brand-icon"><i class="fa-solid fa-bolt"></i></span>
+        <span>Hackathon Starter</span>
+      </a>
+
+      <!-- State: Logged Out -->
+      <div id="nav-logged-out" class="nav-actions">
+        <a href="auth.html" class="btn btn-outline">Sign In</a>
+        <a href="auth.html" class="btn btn-primary">Sign Up</a>
+      </div>
+
+      <!-- State: Logged In -->
+      <div id="nav-logged-in" class="nav-actions hidden">
+        <div class="user-profile-badge">
+          <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
+          <span id="user-greeting" style="font-weight: 600; font-size: 0.9rem;">Khushamdeed!</span>
+        </div>
+        <button type="button" id="btn-logout" class="btn btn-danger-outline">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+      <div class="hero-badge">
+        <i class="fa-solid fa-rocket"></i> Ready for Tomorrow's Hackathon
+      </div>
+      <h1 class="hero-title">
+        Build Your Hackathon App <br>
+        <span class="gradient-text">Faster with HTML, CSS & Supabase</span>
+      </h1>
+      <p class="hero-subtitle">
+        Pre-configured Authentication, modern typography, responsive components, and clean Supabase CRUD utilities ready to customize for any project topic.
+      </p>
+
+      <!-- Guest Welcome Buttons -->
+      <div id="guest-welcome-section" class="hero-buttons">
+        <a href="auth.html" class="btn btn-primary" style="padding: 0.8rem 1.8rem; font-size: 1rem;">
+          <i class="fa-solid fa-lock"></i> Test Login / Sign Up Page
+        </a>
+        <a href="#crud-section" class="btn btn-secondary" style="padding: 0.8rem 1.8rem; font-size: 1rem;">
+          <i class="fa-solid fa-code"></i> Explore Quick-Start Code
+        </a>
+      </div>
+    </section>
+
+    <!-- Auth Protected Dashboard Section (Shown when user logs in) -->
+    <section id="auth-protected-section" class="hidden" style="margin-bottom: 3rem;">
+      <div class="card" style="border-color: rgba(99, 102, 241, 0.4); background: linear-gradient(180deg, #1e293b, #111827);">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h2 style="font-size: 1.5rem; margin-bottom: 0.3rem;">
+              🎉 You are successfully authenticated!
+            </h2>
+            <p class="text-secondary">
+              Aapka Supabase user session active hai. Kal aap jo bhi app banayenge (dashboard, booking, profile), user data yahan se easily access ho sakta hai.
+            </p>
+          </div>
+          <a href="auth.html" class="btn btn-outline" style="font-size: 0.85rem;">
+            Switch Account
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Features Overview -->
+    <section class="grid-cards">
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
+        <h3 class="card-title">Supabase Authentication</h3>
+        <p class="card-description">
+          Complete Sign Up & Sign In flow with secure password validation, session persistence, and logout support already wired up.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-font"></i></div>
+        <h3 class="card-title">Pre-linked Typography</h3>
+        <p class="card-description">
+          Google Fonts (<strong>Plus Jakarta Sans</strong> for headings and <strong>Inter</strong> for clean body text) plus <strong>Font Awesome 6</strong> icons.
+        </p>
+      </div>
+
+      <div class="card">
+        <div class="card-icon"><i class="fa-solid fa-database"></i></div>
+        <h3 class="card-title">Ready-to-use CRUD Helper</h3>
+        <p class="card-description">
+          Universal helper functions: <code>getAll()</code>, <code>create()</code>, <code>update()</code>, and <code>delete()</code> in <code>js/app.js</code>.
+        </p>
+      </div>
+    </section>
+
+    <!-- Interactive CRUD Quick-Test / Demo Component -->
+    <section id="crud-section" class="demo-crud-card">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+        <div>
+          <h2 style="font-size: 1.4rem;"><i class="fa-solid fa-list-check text-primary"></i> Quick Test Component</h2>
+          <p class="text-secondary" style="font-size: 0.9rem;">
+            Neeche form se items add aur delete kar ke UI & Toast alerts test karein:
+          </p>
+        </div>
+        <span class="hero-badge" style="margin: 0;">Interactive Demo</span>
+      </div>
+
+      <form id="demo-crud-form" class="demo-form">
+        <input 
+          type="text" 
+          id="demo-item-input" 
+          class="form-input" 
+          placeholder="E.g., Design database schema, Build navbar..." 
+          required
+        >
+        <button type="submit" class="btn btn-primary" style="white-space: nowrap;">
+          <i class="fa-solid fa-plus"></i> Add Item
+        </button>
+      </form>
+
+      <ul id="demo-items-list" class="demo-list">
+        <!-- Injected dynamically via app.js -->
+      </ul>
+    </section>
+
+    <!-- Cheat Sheet for Tomorrow's Hackathon -->
+    <section style="margin-bottom: 4rem;">
+      <h2 style="font-size: 1.5rem; margin-bottom: 1rem;"><i class="fa-solid fa-code text-primary"></i> Supabase Quick Cheat-Sheet (Kal ke liye)</h2>
+      <div class="grid-cards" style="margin-top: 1rem;">
+        <div class="card">
+          <h4 style="margin-bottom: 0.5rem; color: #38bdf8;">1. Data Fetch Karna (SELECT)</h4>
+          <p class="card-description">Apni table ka saara data lene ke liye:</p>
+          <pre class="code-preview">const { data, error } = await supabaseClient
+  .from('your_table')
+  .select('*')
+  .order('created_at', { ascending: false });</pre>
+        </div>
+
+        <div class="card">
+          <h4 style="margin-bottom: 0.5rem; color: #38bdf8;">2. Naya Data Daalna (INSERT)</h4>
+          <p class="card-description">Naya record insert karne ke liye:</p>
+          <pre class="code-preview">const { data, error } = await supabaseClient
+  .from('your_table')
+  .insert([{ title: 'My Title', user_id: currentUser.id }]);</pre>
+        </div>
+
+        <div class="card">
+          <h4 style="margin-bottom: 0.5rem; color: #38bdf8;">3. Data Update Karna (UPDATE)</h4>
+          <p class="card-description">Kisi specific ID ka data update karne ke liye:</p>
+          <pre class="code-preview">const { data, error } = await supabaseClient
+  .from('your_table')
+  .update({ status: 'completed' })
+  .eq('id', recordId);</pre>
+        </div>
+
+        <div class="card">
+          <h4 style="margin-bottom: 0.5rem; color: #38bdf8;">4. Data Delete Karna (DELETE)</h4>
+          <p class="card-description">Kisi item ko delete karne ke liye:</p>
+          <pre class="code-preview">const { error } = await supabaseClient
+  .from('your_table')
+  .delete()
+  .eq('id', recordId);</pre>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container text-center">
+      <p>Hackathon Starter Kit &bull; Best of luck for tomorrow's competition! 🚀</p>
+    </div>
+  </footer>
+
+  <!-- Supabase CDN JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- App Configuration & Utilities -->
+  <script src="js/config.js"></script>
+  <script src="js/supabaseClient.js"></script>
+  <script src="js/toast.js"></script>
+  <!-- App Script -->
+  <script src="js/app.js"></script>
+</body>
+</html>
