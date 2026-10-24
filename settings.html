@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Settings — HCM Lite</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- ───── SIDEBAR ───── -->
+    <aside class="app-sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo"><i class="fa-solid fa-users-gear"></i></div>
+        <div>
+          <div class="sidebar-brand-name js-company-name">HCM Lite</div>
+          <div class="sidebar-brand-sub">Admin Workspace</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <span class="nav-label">Core Operations</span>
+        <a href="admin.html" class="nav-link">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="employees.html" class="nav-link">
+          <i class="fa-solid fa-users"></i>
+          <span>Manage Employees</span>
+        </a>
+        <a href="leaves.html" class="nav-link">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span>Leave Requests</span>
+        </a>
+        <a href="payslip.html" class="nav-link">
+          <i class="fa-solid fa-file-invoice-dollar"></i>
+          <span>Payroll & Payslips</span>
+        </a>
+
+        <span class="nav-label" style="margin-top: 1rem;">System</span>
+        <a href="settings.html" class="nav-link active">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Company Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-mini-card">
+          <div class="avatar-badge js-user-avatar">AD</div>
+          <div style="overflow: hidden;">
+            <div style="font-weight: 700; font-size: 0.88rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;" class="js-user-name">Admin</div>
+            <div style="font-size: 0.72rem; color: rgba(255,255,255,0.6);" class="js-user-role">Administrator</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-icon js-logout-btn" style="color: rgba(255,255,255,0.7);" title="Logout">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ───── MAIN CONTENT ───── -->
+    <main class="app-main">
+
+      <!-- Topbar -->
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <button type="button" id="mobile-menu-btn" class="btn btn-icon btn-outline mobile-menu-btn" style="display: none;">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="topbar-title">Company Settings & Business Rules</h1>
+        </div>
+        <div class="topbar-right">
+          <button type="button" id="btn-theme-toggle" class="btn btn-icon btn-outline" title="Toggle Light/Dark Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Body -->
+      <div class="content-body" style="max-width: 800px;">
+
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title"><i class="fa-solid fa-gear text-primary"></i> Organization Policy & Rules</h2>
+            <span class="badge badge-info">Stored in LocalStorage</span>
+          </div>
+
+          <form id="settings-form">
+            <div class="form-group">
+              <label class="form-label">Company / Institute Name *</label>
+              <input type="text" id="setting-company-name" class="form-control" required>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Official Office Start Time *</label>
+                <input type="time" id="setting-start-time" class="form-control" required>
+                <small class="text-muted">Arrivals after this time + grace minutes are flagged as Late.</small>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Grace Period (Minutes) *</label>
+                <input type="number" id="setting-grace-minutes" class="form-control" min="0" max="60" required>
+                <small class="text-muted">Standard allowance before late penalty triggers (e.g. 15 min).</small>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Annual Leave Quota (Per Employee) *</label>
+                <input type="number" id="setting-leave-quota" class="form-control" min="1" max="100" required>
+                <small class="text-muted">Default yearly allowed leave days for all staff.</small>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Weekly Schedule</label>
+                <select id="setting-working-days" class="form-control">
+                  <option value="Mon-Fri">Monday to Friday (5 Days)</option>
+                  <option value="Mon-Sat">Monday to Saturday (6 Days)</option>
+                </select>
+              </div>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid var(--border-light); margin: 1.5rem 0;">
+
+            <h3 style="font-size: 1rem; margin-bottom: 0.75rem; color: var(--secondary);">
+              <i class="fa-solid fa-location-dot mr-1"></i> Office Geofence (Optional Bonus)
+            </h3>
+            <p class="text-muted small" style="margin-bottom: 1rem;">Used for location verification during camera-assisted mobile/web check-ins.</p>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Office Latitude</label>
+                <input type="number" id="setting-office-lat" class="form-control" step="any" placeholder="24.8607">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Office Longitude</label>
+                <input type="number" id="setting-office-lng" class="form-control" step="any" placeholder="67.0011">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Radius (Meters)</label>
+                <input type="number" id="setting-radius" class="form-control" value="150" min="10" max="5000">
+              </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end;">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fa-solid fa-floppy-disk mr-1"></i> Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Factory Reset Box -->
+        <div class="card" style="border-color: rgba(239, 68, 68, 0.3); background-color: var(--danger-bg);">
+          <div class="card-header" style="border-bottom-color: rgba(239, 68, 68, 0.2);">
+            <h2 class="card-title text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone / Demo Reset</h2>
+          </div>
+          <p style="font-size: 0.88rem; color: var(--danger); margin-bottom: 1rem;">
+            Clears all company records, employees, attendance, and leaves from browser localStorage. This allows judges to test the app from scratch.
+          </p>
+          <button type="button" id="btn-danger-reset" class="btn btn-danger">
+            <i class="fa-solid fa-trash-can mr-1"></i> Wipe All Data & Re-run Setup
+          </button>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/helper.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = Auth.guard('admin');
+      if (!user) return;
+
+      Auth.initUI();
+      SmartHelper.init(user);
+
+      // Load Settings into form
+      const comp = Storage.getCompany() || {};
+      document.getElementById('setting-company-name').value = comp.name || '';
+      document.getElementById('setting-start-time').value = comp.startTime || '09:00';
+      document.getElementById('setting-grace-minutes').value = comp.graceMinutes || 15;
+      document.getElementById('setting-leave-quota').value = comp.leaveQuota || 20;
+      document.getElementById('setting-working-days').value = comp.workingDays || 'Mon-Fri';
+      document.getElementById('setting-office-lat').value = comp.officeLat || '';
+      document.getElementById('setting-office-lng').value = comp.officeLng || '';
+      document.getElementById('setting-radius').value = comp.radius || 150;
+
+      // Save Settings Form
+      document.getElementById('settings-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const updated = {
+          ...comp,
+          name: document.getElementById('setting-company-name').value.trim(),
+          startTime: document.getElementById('setting-start-time').value,
+          graceMinutes: parseInt(document.getElementById('setting-grace-minutes').value) || 15,
+          leaveQuota: parseInt(document.getElementById('setting-leave-quota').value) || 20,
+          workingDays: document.getElementById('setting-working-days').value,
+          officeLat: document.getElementById('setting-office-lat').value,
+          officeLng: document.getElementById('setting-office-lng').value,
+          radius: parseInt(document.getElementById('setting-radius').value) || 150
+        };
+
+        Storage.saveCompany(updated);
+        alert('Company settings updated successfully.');
+        window.location.reload();
+      });
+
+      // Reset App
+      document.getElementById('btn-danger-reset').addEventListener('click', () => {
+        if (confirm('Are you sure you want to completely erase all data? All mock employees, attendance, and settings will be permanently wiped.')) {
+          Storage.resetAllData();
+          window.location.href = 'index.html';
+        }
+      });
+
+      const mobBtn = document.getElementById('mobile-menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      if (mobBtn && sidebar) {
+        mobBtn.addEventListener('click', () => sidebar.classList.toggle('mobile-open'));
+      }
+    });
+  </script>
+</body>
+</html>

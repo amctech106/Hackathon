@@ -1,126 +1,118 @@
-# 🚀 Hackathon Starter Kit (HTML5 + CSS3 + JavaScript + Supabase)
+# HCM Lite — Saylani Hackathon (Beginner Track)
 
-Yeh boilerplate aapke kal ke hackathon ke liye mukammal taur par tayyar kiya gaya hai taake aapka waqt Authentication, UI styling, Fonts aur Database configuration me barbad na ho.
+> **Modern, AI-Assisted Human Capital Management Web App**  
+> Built strictly with **HTML5, CSS3, Vanilla JavaScript (ES6+), and browser `localStorage`**.  
+> **Zero Frameworks • Zero Backend • No Preloaded/Dummy Data**
 
 ---
 
-## 📁 File Structure
+## 🌟 Live Demo & Judging Guide (5-Minute Walkthrough)
+
+As specified in the hackathon brief, the application **starts 100% empty**. Follow these simple steps during judging:
+
+### Step 1: First-Run Setup (`index.html`)
+1. Open [`index.html`](index.html) in any modern browser.
+2. Because no company exists yet, the **First-Run Setup** screen appears automatically.
+3. Enter your company information:
+   - **Company Name**: e.g. *Saylani Welfare International Trust*
+   - **Office Start Time**: `09:00`
+   - **Grace Minutes**: `15`
+   - **Annual Leave Quota**: `20` Days
+   - **Admin Name, Email & Password**: Create the master administrator credentials.
+4. Click **Complete Setup & Launch**. You are immediately logged in to the **Admin Dashboard**!
+
+### Step 2: Register Employees (`employees.html`)
+1. Go to **Manage Employees** in the sidebar.
+2. Click **+ Add Employee**.
+3. Create 1 or 2 employees (e.g., Name: *Ahmed Raza*, Email: *ahmed@saylani.org*, Password: *1234*, Department: *Engineering*, Salary: *80000*).
+4. Notice that registering an employee automatically creates their credentials!
+5. Optional: Click **Export CSV** to download employee data.
+
+### Step 3: Employee Self-Service Check-In & Leave (`employee.html`)
+1. Click **Logout** from the Admin dashboard.
+2. Log in using the employee credentials you just created (*ahmed@saylani.org* / *1234*).
+3. On the **Employee Dashboard**:
+   - View the **Live Digital Clock** and office timing policy.
+   - Click **Check In** (or click **Camera Check-In** for bonus webcam face verification!).
+   - Notice the status badge turns **PRESENT** (or **LATE** if after 09:15).
+   - Click **Apply for Leave** modal: Choose dates (e.g. next Monday & Tuesday). The app validates working days excluding weekends, checks quota, and prevents overlapping leaves.
+   - Submit the leave request.
+
+### Step 4: Admin Review & Approvals (`leaves.html` & `admin.html`)
+1. Log out from the employee account and log back in as **Admin**.
+2. Visit **Leave Requests**: View the pending application and click **Approve** (with an optional comment).
+3. Return to **Dashboard**: Observe real-time totals, today's attendance table, and the dynamic **Chart.js status doughnut chart**.
+
+### Step 5: Monthly Payroll & Payslip (`payslip.html`)
+1. Navigate to **Payroll & Payslips**.
+2. Select any employee and generate their monthly slip.
+3. **Exact Business Formula Applied**:
+   $$\text{Per Day Rate} = \frac{\text{Monthly Salary}}{\text{Working Days in Month}}$$
+   $$\text{Deduction} = \text{Per Day Rate} \times (\text{Absent Days} + 0.5 \times \text{Half Days})$$
+   $$\text{Net Salary} = \text{Gross Salary} - \text{Deduction}$$
+4. Click **Print / Save as PDF** to preview a crisp, professional payslip document.
+
+### Step 6: Test the Smart Helper (AI Touch)
+Click the floating **AI Assistant** button at the bottom-right of either dashboard:
+- **As Admin, ask**:
+  - *"How many employees do we have?"*
+  - *"Who was late today?"*
+  - *"Who is on leave today?"*
+  - *"What is total payroll cost?"*
+- **As Employee, ask**:
+  - *"How many leaves do I have left?"*
+  - *"Was I late today?"*
+  - *"What is my net salary?"*
+- *All answers are computed on the fly from actual localStorage records!*
+
+---
+
+## 📁 Project Architecture & File Map
 
 ```text
-Hackathon/
-├── index.html            # Landing / Dashboard page (Session check, User Greeting, Cheatsheet)
-├── login.html            # Dedicated Sign In (Login) page
-├── signup.html           # Dedicated Create Account (Sign Up) page
-├── auth.html             # Combined Tabbed Login & Sign-up page
+├── index.html          # Login & First-run company/admin setup
+├── admin.html          # Admin dashboard, KPIs, Chart.js, Announcements
+├── employees.html      # Employee directory, Add/Edit/Delete, CSV export
+├── leaves.html         # Leave requests approval inbox with comments
+├── settings.html       # Organization rules, timings, quota & demo reset
+├── employee.html       # Employee self-service, check-in/out, camera modal
+├── payslip.html        # Monthly salary statement with print layout
 ├── css/
-│   └── style.css         # Modern responsive CSS, Variables, Buttons, Cards, Toast alerts
-├── js/
-│   ├── config.js         # Yahan apna Supabase URL aur Anon Key lagayein
-│   ├── supabaseClient.js # Supabase client initialization (CDN based)
-│   ├── toast.js          # Modern alert/toast system (no ugly browser alert popups)
-│   ├── auth.js           # Sign In, Sign Up, Sign Out, Forgot password logic
-│   └── app.js            # App logic & ready-to-use CRUD helper functions
-├── .gitignore            # Git ignore file
-└── README.md             # Guide & instructions
+│   └── style.css       # Complete modern enterprise design system & dark mode
+└── js/
+    ├── storage.js      # LocalStorage engine, CRUD, business rules & math
+    ├── auth.js         # Session management & role security guards
+    ├── employees.js    # Directory search, department filters & modal logic
+    ├── attendance.js   # Live clock, late penalty, camera preview & CSV
+    ├── leave.js        # Leave validations (no overlap, weekend skipping)
+    └── helper.js       # Smart Helper chatbot answering from live data
 ```
 
 ---
 
-## 🔤 Pre-Configured Fonts & Icons
+## 🛡️ Business Rules Implemented
 
-Aapko fonts download ya configure karne ki zaroorat nahi hai, yeh pehle se HTML files aur CSS me wired hain:
-1. **Headings Font:** `Plus Jakarta Sans` (Google Font - Bold & Modern)
-2. **Body Text Font:** `Inter` (Google Font - Clean & Readable)
-3. **Icons:** `Font Awesome 6` (CDN pre-loaded: User, Lock, Eye, Trash, Rocket, Check, etc.)
-
----
-
-## ⚡ Step 1: Supabase Setup (Sirf 2 Minute)
-
-1. [Supabase](https://supabase.com/) par login karein aur naya project banayein.
-2. Left sidebar se **Project Settings** (Gear icon ⚙️) me jayein -> **API** par click karein.
-3. Wahan se:
-   - **Project URL** copy karein
-   - **Project API Keys** me se **`anon` `public`** key copy karein
-4. File `js/config.js` ko open karein aur values paste kar dein:
-   ```javascript
-   const SUPABASE_CONFIG = {
-     url: "https://your-project-id.supabase.co",
-     anonKey: "eyJhbGciOi..."
-   };
-   ```
-
-> 💡 **Hackathon Tip:** Agar aap chahte hain ke Sign-Up ke waqt user ko email verification ka intezar na karna pare aur seedha login ho jaye, tou Supabase Dashboard me **Authentication** -> **Providers** -> **Email** me jayein aur **"Confirm email"** ko **OFF (disable)** kar dein!
+| Module | Business Rule Decided by Admin |
+|---|---|
+| **M1: Auth & Access** | Session persistence in `hcm_session`. If an Employee attempts to open an Admin page, they are immediately redirected back to `employee.html`. |
+| **M2: Company Setup** | Starts empty. First-run setup stores company start time, grace minutes, leave quota, and admin account. |
+| **M3: Employees** | Required fields, valid email format, email uniqueness guard, positive salary check, real-time search & department filtering. |
+| **M4: Attendance** | Single check-in per day (second check-in blocked). Arrival after `startTime + graceMinutes` automatically marked **LATE**. Work hours under 5 hours marked **HALF DAY**. |
+| **M5: Leaves** | From date $\le$ To date. Working days calculated excluding Saturdays and Sundays. Overlapping requests blocked. Quota overflow blocked. |
+| **M6: Payslip** | Daily rate calculated from month's working days. Automated absent and half-day deductions calculated per specification. |
+| **M8: Smart Helper** | Admin receives company-wide metrics; Employees receive strictly their own scoped records. |
 
 ---
 
-## 💻 Step 2: Project Run Kaise Karein?
-
-- Agar aap VS Code use kar rahe hain: **Live Server** extension se `index.html` ya `auth.html` ko Right Click kar ke **"Open with Live Server"** karein.
-- Ya simply kisi bhi browser me `index.html` file par double click kar ke open kar lein.
-
----
-
-## 🐙 Step 3: GitHub Repo Kaise Banayein Aur Push Karein?
-
-### Tareeqa A: Agar Git CLI install hai:
-```bash
-# 1. Git repository initialize karein
-git init
-
-# 2. Tamam files add karein
-git add .
-
-# 3. Commit karein
-git commit -m "Initial hackathon starter setup with Supabase auth"
-
-# 4. GitHub par ja kar naya repository create karein (e.g., hackathon-project)
-# Phir apna branch main karein aur remote add karein:
-git branch -M main
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPO_NAME.git
-git push -u origin main
-```
-
-### Tareeqa B: GitHub Desktop (Asaan tareeqa):
-1. **GitHub Desktop** open karein.
-2. **File -> Add Local Repository** par click karein aur `e:\SMIT B22\Hackathon` folder select karein.
-3. Agar poochay ke repository nahi bana hua tou **"Create a repository"** par click karein.
-4. **Publish repository** par click kar dein!
+## 🎁 Bonus Points Implemented (+10)
+1. **Camera Web Check-In**: Live webcam video stream via `navigator.mediaDevices.getUserMedia()` with selfie check-in confirmation.
+2. **Chart.js Attendance Analytics**: Real-time interactive Doughnut chart of today's attendance distribution.
+3. **CSV Data Export**: One-click export for both Employee Directory and Daily Attendance Logs.
+4. **Dark Mode Toggle**: Persistent theme switcher with custom CSS variables.
+5. **Printable Payslip**: Dedicated `@media print` CSS layout for clean PDF downloads.
+6. **One-Click Demo Reset**: Danger zone button to wipe localStorage and let judges re-run the entire fresh install story.
 
 ---
 
-## 🛠️ Kal Ke Liye Ready-to-Use Database (CRUD) Functions
-
-`js/app.js` me `Database` object bana hua hai, kal jo bhi table banayein:
-
-```javascript
-// 1. Data Get Karna (Read)
-const products = await Database.getAll('products');
-
-// 2. Naya Record Daalna (Create)
-const newItem = await Database.create('products', {
-  name: 'Laptop',
-  price: 999,
-  user_id: currentUser.id
-});
-
-// 3. Record Update Karna (Update)
-await Database.update('products', itemId, { price: 899 });
-
-// 4. Record Delete Karna (Delete)
-await Database.delete('products', itemId);
-```
-
----
-
-## 🔔 Toast Notifications Kaise Use Karein?
-
-Browser ke standard `alert()` ke bajaye toast alerts use karein:
-```javascript
-Toast.success('Kamyabi se save ho gaya!');
-Toast.error('Koi ghalti pesh aayi!');
-Toast.warning('Check input fields!');
-Toast.info('Aapka session active hai.');
-```
-
-All the best for tomorrow's hackathon! 🏆
+### Saylani Hackathon — 24 October 2026
+**Zaitoon Ashraf IT Park**

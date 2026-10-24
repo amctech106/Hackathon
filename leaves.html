@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leave Requests — HCM Lite</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- ───── SIDEBAR ───── -->
+    <aside class="app-sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo"><i class="fa-solid fa-users-gear"></i></div>
+        <div>
+          <div class="sidebar-brand-name js-company-name">HCM Lite</div>
+          <div class="sidebar-brand-sub">Admin Workspace</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <span class="nav-label">Core Operations</span>
+        <a href="admin.html" class="nav-link">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="employees.html" class="nav-link">
+          <i class="fa-solid fa-users"></i>
+          <span>Manage Employees</span>
+        </a>
+        <a href="leaves.html" class="nav-link active">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span>Leave Requests</span>
+        </a>
+        <a href="payslip.html" class="nav-link">
+          <i class="fa-solid fa-file-invoice-dollar"></i>
+          <span>Payroll & Payslips</span>
+        </a>
+
+        <span class="nav-label" style="margin-top: 1rem;">System</span>
+        <a href="settings.html" class="nav-link">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Company Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-mini-card">
+          <div class="avatar-badge js-user-avatar">AD</div>
+          <div style="overflow: hidden;">
+            <div style="font-weight: 700; font-size: 0.88rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;" class="js-user-name">Admin</div>
+            <div style="font-size: 0.72rem; color: rgba(255,255,255,0.6);" class="js-user-role">Administrator</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-icon js-logout-btn" style="color: rgba(255,255,255,0.7);" title="Logout">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ───── MAIN CONTENT ───── -->
+    <main class="app-main">
+
+      <!-- Topbar -->
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <button type="button" id="mobile-menu-btn" class="btn btn-icon btn-outline mobile-menu-btn" style="display: none;">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="topbar-title">Leave Applications & Approvals</h1>
+        </div>
+        <div class="topbar-right">
+          <button type="button" id="btn-theme-toggle" class="btn btn-icon btn-outline" title="Toggle Light/Dark Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Body -->
+      <div class="content-body">
+
+        <!-- Filter bar -->
+        <div class="card" style="padding: 1rem 1.25rem; margin-bottom: 1.25rem;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span class="text-muted small font-weight-bold">Filter By Status:</span>
+              <select id="filter-leave-status" class="form-control" style="width: auto; padding: 0.4rem 0.85rem;">
+                <option value="all">All Applications</option>
+                <option value="pending" selected>Pending Review</option>
+                <option value="approved">Approved</option>
+                <option value="rejected">Rejected</option>
+              </select>
+            </div>
+            <div class="text-muted small">
+              <i class="fa-solid fa-circle-info text-info mr-1"></i> Approving leaves automatically adjusts remaining leave quotas & attendance calculations.
+            </div>
+          </div>
+        </div>
+
+        <!-- Leaves Table -->
+        <div class="card">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Department</th>
+                  <th>Leave Type</th>
+                  <th>Date Duration</th>
+                  <th>Working Days</th>
+                  <th>Reason</th>
+                  <th>Status</th>
+                  <th class="text-right">Action / Comment</th>
+                </tr>
+              </thead>
+              <tbody id="admin-leaves-table-body">
+                <!-- Populated via leave.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ───── DECISION MODAL (APPROVE / REJECT) ───── -->
+  <div id="leave-decision-modal" class="modal-backdrop hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="decision-modal-title">Review Leave Request</h3>
+        <button type="button" id="btn-close-decision-modal" class="btn btn-icon btn-outline" style="border: none;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="leave-decision-form">
+        <div class="modal-body">
+          <input type="hidden" id="decision-leave-id">
+          <input type="hidden" id="decision-action">
+
+          <div class="form-group">
+            <label class="form-label">Review Comment (Optional)</label>
+            <textarea id="decision-comment" class="form-control" rows="3" placeholder="Add an optional remark or reason for this decision..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('leave-decision-modal').classList.add('hidden')">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-confirm-decision">Confirm Decision</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/leave.js"></script>
+  <script src="js/helper.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = Auth.guard('admin');
+      if (!user) return;
+
+      Auth.initUI();
+      SmartHelper.init(user);
+      LeaveModule.init(user);
+
+      const mobBtn = document.getElementById('mobile-menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      if (mobBtn && sidebar) {
+        mobBtn.addEventListener('click', () => sidebar.classList.toggle('mobile-open'));
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Employee Portal — HCM Lite</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- ───── SIDEBAR ───── -->
+    <aside class="app-sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo"><i class="fa-solid fa-user-tie"></i></div>
+        <div>
+          <div class="sidebar-brand-name js-company-name">HCM Lite</div>
+          <div class="sidebar-brand-sub">Self-Service Portal</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <span class="nav-label">My Workspace</span>
+        <a href="employee.html" class="nav-link active">
+          <i class="fa-solid fa-house-user"></i>
+          <span>My Dashboard</span>
+        </a>
+        <a href="payslip.html" class="nav-link">
+          <i class="fa-solid fa-file-invoice-dollar"></i>
+          <span>My Payslip</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-mini-card">
+          <div class="avatar-badge js-user-avatar">EM</div>
+          <div style="overflow: hidden;">
+            <div style="font-weight: 700; font-size: 0.88rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;" class="js-user-name">Employee</div>
+            <div style="font-size: 0.72rem; color: rgba(255,255,255,0.6);" class="js-user-role">Staff Member</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-icon js-logout-btn" style="color: rgba(255,255,255,0.7);" title="Logout">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ───── MAIN CONTENT ───── -->
+    <main class="app-main">
+
+      <!-- Topbar -->
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <button type="button" id="mobile-menu-btn" class="btn btn-icon btn-outline mobile-menu-btn" style="display: none;">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="topbar-title">Welcome, <span class="js-user-name">Employee</span> 👋</h1>
+        </div>
+        <div class="topbar-right">
+          <button type="button" id="btn-theme-toggle" class="btn btn-icon btn-outline" title="Toggle Light/Dark Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <button type="button" id="btn-open-leave-modal" class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-calendar-plus mr-1"></i> Apply for Leave
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Body -->
+      <div class="content-body">
+
+        <!-- Attendance Check-in Widget Banner -->
+        <div class="card" style="background: linear-gradient(135deg, rgba(2, 132, 199, 0.04), rgba(13, 148, 136, 0.04)); border-left: 4px solid var(--primary);">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem;">
+            <div>
+              <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.35rem;">
+                <span id="today-status-text"><span class="badge badge-warning">Not Checked In</span></span>
+                <span id="live-date" style="font-size: 0.85rem; color: var(--text-muted); font-weight: 600;"></span>
+              </div>
+              <div id="live-clock" style="font-size: 2.25rem; font-family: var(--font-heading); font-weight: 800; letter-spacing: -0.02em; color: var(--text-main);">
+                --:--:--
+              </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 0.75rem; flex-wrap: wrap;">
+              <button type="button" id="btn-check-in" class="btn btn-success btn-lg">
+                <i class="fa-solid fa-right-to-bracket mr-1"></i> Check In
+              </button>
+              <button type="button" id="btn-camera-check-in" class="btn btn-outline btn-lg" title="Check In with Selfie Camera">
+                <i class="fa-solid fa-camera mr-1"></i> Camera Check-In
+              </button>
+              <button type="button" id="btn-check-out" class="btn btn-danger btn-lg" disabled>
+                <i class="fa-solid fa-right-from-bracket mr-1"></i> Check Out
+              </button>
+            </div>
+          </div>
+
+          <!-- Quick Today Metrics Bar -->
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin-top: 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--border-light);">
+            <div>
+              <div class="text-muted small">Check-In Time</div>
+              <strong id="stat-check-in-time" style="font-size: 1.1rem;">—</strong>
+            </div>
+            <div>
+              <div class="text-muted small">Check-Out Time</div>
+              <strong id="stat-check-out-time" style="font-size: 1.1rem;">—</strong>
+            </div>
+            <div>
+              <div class="text-muted small">Work Hours</div>
+              <strong id="stat-work-hours" style="font-size: 1.1rem;">0 hrs</strong>
+            </div>
+            <div>
+              <div class="text-muted small">Office Policy</div>
+              <strong class="text-primary small" id="stat-policy-timing">09:00 AM (15m grace)</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Personal Stats Grid -->
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-icon info"><i class="fa-solid fa-umbrella-beach"></i></div>
+            <div>
+              <div class="stat-value" id="quota-remaining">0 Days</div>
+              <div class="stat-label">Remaining Leaves (<span id="quota-total">0</span> Total)</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon warning"><i class="fa-solid fa-calendar-xmark"></i></div>
+            <div>
+              <div class="stat-value" id="quota-used">0 Days</div>
+              <div class="stat-label">Used Approved Leaves</div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon success"><i class="fa-solid fa-money-bill-wave"></i></div>
+            <div>
+              <div class="stat-value" id="emp-monthly-salary">PKR 0</div>
+              <div class="stat-label">Base Monthly Salary</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2 Column Section: Attendance Records & Company Announcements -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+
+          <!-- My Attendance History -->
+          <div class="card" style="margin-bottom: 0;">
+            <div class="card-header">
+              <h2 class="card-title"><i class="fa-solid fa-clock-rotate-left text-primary"></i> My Attendance History</h2>
+              <span class="badge badge-info">Recent Log</span>
+            </div>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>In</th>
+                    <th>Out</th>
+                    <th>Hours</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="employee-attendance-history">
+                  <!-- Populated via attendance.js -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Company Announcements Feed -->
+          <div class="card" style="margin-bottom: 0;">
+            <div class="card-header">
+              <h2 class="card-title"><i class="fa-solid fa-bullhorn text-warning"></i> Announcements</h2>
+            </div>
+            <div id="employee-announcements-list" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 280px; overflow-y: auto;">
+              <!-- Populated via js -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- My Leave Requests History -->
+        <div class="card">
+          <div class="card-header">
+            <h2 class="card-title"><i class="fa-solid fa-calendar-days text-secondary"></i> My Leave Applications</h2>
+            <button type="button" class="btn btn-sm btn-outline" onclick="document.getElementById('leave-modal').classList.remove('hidden')">
+              <i class="fa-solid fa-plus mr-1"></i> New Request
+            </button>
+          </div>
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Leave Type</th>
+                  <th>Dates</th>
+                  <th>Working Days</th>
+                  <th>Reason</th>
+                  <th>Status</th>
+                  <th>Admin Remarks</th>
+                </tr>
+              </thead>
+              <tbody id="employee-leave-history">
+                <!-- Populated via leave.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ───── APPLY LEAVE MODAL ───── -->
+  <div id="leave-modal" class="modal-backdrop hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title">Apply for Leave</h3>
+        <button type="button" class="btn btn-icon btn-outline" style="border: none;" onclick="document.getElementById('leave-modal').classList.add('hidden')">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="leave-apply-form">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label">Leave Type *</label>
+            <select id="leave-type" class="form-control" required>
+              <option value="Casual">Casual Leave</option>
+              <option value="Sick">Sick Leave</option>
+              <option value="Annual">Annual Vacation</option>
+              <option value="Unpaid">Unpaid Leave</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">From Date *</label>
+              <input type="date" id="leave-from" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">To Date *</label>
+              <input type="date" id="leave-to" class="form-control" required>
+            </div>
+          </div>
+
+          <div id="leave-days-preview" style="font-weight: 600; margin-bottom: 1rem;"></div>
+
+          <div class="form-group">
+            <label class="form-label">Reason *</label>
+            <textarea id="leave-reason" class="form-control" rows="3" placeholder="Briefly explain the reason for your leave request..." required></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" onclick="document.getElementById('leave-modal').classList.add('hidden')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Submit Application</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ───── BONUS: CAMERA WEBCAM CHECK-IN MODAL ───── -->
+  <div id="camera-modal" class="modal-backdrop hidden">
+    <div class="modal-content" style="max-width: 480px;">
+      <div class="modal-header">
+        <h3 class="modal-title"><i class="fa-solid fa-camera mr-1"></i> Camera Face Check-In</h3>
+        <button type="button" id="btn-close-cam" class="btn btn-icon btn-outline" style="border: none;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="modal-body text-center">
+        <div style="position: relative; border-radius: var(--radius-md); overflow: hidden; background: #000; width: 100%; height: 260px; margin-bottom: 1rem;">
+          <video id="camera-video" autoplay playsinline muted style="width: 100%; height: 100%; object-fit: cover;"></video>
+          <div style="position: absolute; top: 10px; right: 10px; background: rgba(0,0,0,0.6); color: #fff; padding: 0.2rem 0.6rem; border-radius: 20px; font-size: 0.75rem;">
+            <i class="fa-solid fa-circle text-danger mr-1" style="animation: pulse 1s infinite;"></i> LIVE
+          </div>
+        </div>
+        <p class="text-muted small">Please align your face in front of the camera and click below to record your verified check-in.</p>
+      </div>
+
+      <div class="modal-footer" style="justify-content: center;">
+        <button type="button" id="btn-snap-checkin" class="btn btn-primary btn-lg" style="width: 100%;">
+          <i class="fa-solid fa-check-circle mr-1"></i> Capture & Check In
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/attendance.js"></script>
+  <script src="js/leave.js"></script>
+  <script src="js/helper.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. Guard (Only Employee)
+      const user = Auth.guard('employee');
+      if (!user) return;
+
+      Auth.initUI();
+      SmartHelper.init(user);
+      AttendanceModule.init(user);
+      LeaveModule.init(user);
+
+      // 2. Personal info
+      document.getElementById('emp-monthly-salary').textContent = `PKR ${Number(user.salary || 0).toLocaleString()}`;
+      const comp = Storage.getCompany();
+      if (comp) {
+        document.getElementById('stat-policy-timing').textContent = `${comp.startTime || '09:00'} (${comp.graceMinutes || 15}m grace)`;
+      }
+
+      // 3. Apply leave modal triggers
+      const openLeaveBtn = document.getElementById('btn-open-leave-modal');
+      const leaveModal = document.getElementById('leave-modal');
+      if (openLeaveBtn && leaveModal) {
+        openLeaveBtn.addEventListener('click', () => leaveModal.classList.remove('hidden'));
+      }
+
+      // 4. Render Announcements
+      renderEmployeeAnnouncements();
+
+      const mobBtn = document.getElementById('mobile-menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      if (mobBtn && sidebar) {
+        mobBtn.addEventListener('click', () => sidebar.classList.toggle('mobile-open'));
+      }
+    });
+
+    function renderEmployeeAnnouncements() {
+      const container = document.getElementById('employee-announcements-list');
+      if (!container) return;
+      const list = Storage.getAnnouncements();
+
+      if (list.length === 0) {
+        container.innerHTML = `<div class="text-muted small text-center py-4">No company announcements right now.</div>`;
+        return;
+      }
+
+      container.innerHTML = list.map(item => `
+        <div style="padding: 0.75rem; border-radius: var(--radius-sm); background-color: var(--border-light); border-left: 3px solid var(--primary);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.25rem;">
+            <strong style="font-size: 0.88rem;">${item.title}</strong>
+            <span class="text-muted" style="font-size: 0.7rem;">${item.createdAt}</span>
+          </div>
+          <p style="font-size: 0.82rem; margin: 0; color: var(--text-muted);">${item.content}</p>
+        </div>
+      `).join('');
+    }
+  </script>
+</body>
+</html>

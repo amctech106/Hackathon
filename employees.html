@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Employees — HCM Lite</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- ───── SIDEBAR ───── -->
+    <aside class="app-sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo"><i class="fa-solid fa-users-gear"></i></div>
+        <div>
+          <div class="sidebar-brand-name js-company-name">HCM Lite</div>
+          <div class="sidebar-brand-sub">Admin Workspace</div>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <span class="nav-label">Core Operations</span>
+        <a href="admin.html" class="nav-link">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="employees.html" class="nav-link active">
+          <i class="fa-solid fa-users"></i>
+          <span>Manage Employees</span>
+        </a>
+        <a href="leaves.html" class="nav-link">
+          <i class="fa-solid fa-calendar-check"></i>
+          <span>Leave Requests</span>
+        </a>
+        <a href="payslip.html" class="nav-link">
+          <i class="fa-solid fa-file-invoice-dollar"></i>
+          <span>Payroll & Payslips</span>
+        </a>
+
+        <span class="nav-label" style="margin-top: 1rem;">System</span>
+        <a href="settings.html" class="nav-link">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Company Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-mini-card">
+          <div class="avatar-badge js-user-avatar">AD</div>
+          <div style="overflow: hidden;">
+            <div style="font-weight: 700; font-size: 0.88rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;" class="js-user-name">Admin</div>
+            <div style="font-size: 0.72rem; color: rgba(255,255,255,0.6);" class="js-user-role">Administrator</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-icon js-logout-btn" style="color: rgba(255,255,255,0.7);" title="Logout">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+        </button>
+      </div>
+    </aside>
+
+    <!-- ───── MAIN CONTENT ───── -->
+    <main class="app-main">
+
+      <!-- Topbar -->
+      <header class="app-topbar">
+        <div class="topbar-left">
+          <button type="button" id="mobile-menu-btn" class="btn btn-icon btn-outline mobile-menu-btn" style="display: none;">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <h1 class="topbar-title">Manage Employees</h1>
+        </div>
+        <div class="topbar-right">
+          <button type="button" id="btn-theme-toggle" class="btn btn-icon btn-outline" title="Toggle Light/Dark Theme">
+            <i class="fa-solid fa-moon"></i>
+          </button>
+          <button type="button" id="btn-export-csv" class="btn btn-outline btn-sm">
+            <i class="fa-solid fa-file-csv mr-1"></i> Export CSV
+          </button>
+          <button type="button" id="btn-add-employee" class="btn btn-primary btn-sm">
+            <i class="fa-solid fa-user-plus mr-1"></i> Add Employee
+          </button>
+        </div>
+      </header>
+
+      <!-- Content Body -->
+      <div class="content-body">
+
+        <!-- Filter & Search Bar -->
+        <div class="card" style="padding: 1rem 1.25rem; margin-bottom: 1.25rem;">
+          <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px; position: relative;">
+              <input type="text" id="search-employee" class="form-control" placeholder="Search by name, email, or designation...">
+            </div>
+            <div style="width: 200px;">
+              <select id="filter-department" class="form-control">
+                <option value="all">All Departments</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Employees Table -->
+        <div class="card">
+          <div class="table-responsive">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Employee</th>
+                  <th>Department</th>
+                  <th>Designation</th>
+                  <th>Monthly Salary</th>
+                  <th>Phone</th>
+                  <th>Joined Date</th>
+                  <th class="text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="employees-table-body">
+                <!-- Populated via employees.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+
+  <!-- ───── ADD / EDIT EMPLOYEE MODAL ───── -->
+  <div id="employee-modal" class="modal-backdrop hidden">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modal-title">Add New Employee</h3>
+        <button type="button" id="btn-close-modal" class="btn btn-icon btn-outline" style="border: none;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form id="employee-form">
+        <div class="modal-body">
+          <input type="hidden" id="employee-edit-id">
+
+          <div class="form-group">
+            <label class="form-label">Full Name *</label>
+            <input type="text" id="emp-name" class="form-control" placeholder="e.g. Sara Ahmed" required>
+            <span class="field-error" id="err-name"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Email Address (Login ID) *</label>
+            <input type="email" id="emp-email" class="form-control" placeholder="sara@company.com" required>
+            <span class="field-error" id="err-email"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Login Password *</label>
+            <input type="password" id="emp-password" class="form-control" placeholder="••••••••" minlength="4">
+            <small class="text-muted" id="password-help">Sets the initial login password for this employee.</small>
+            <span class="field-error" id="err-password"></span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Department *</label>
+              <select id="emp-dept" class="form-control" required>
+                <option value="Engineering">Engineering</option>
+                <option value="Human Resources">Human Resources</option>
+                <option value="Accounts & Finance">Accounts & Finance</option>
+                <option value="Marketing">Marketing</option>
+                <option value="Operations">Operations</option>
+                <option value="General">General</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Designation</label>
+              <input type="text" id="emp-designation" class="form-control" placeholder="e.g. Software Engineer">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Monthly Gross Salary (PKR) *</label>
+              <input type="number" id="emp-salary" class="form-control" placeholder="e.g. 75000" min="1" step="any" required>
+              <span class="field-error" id="err-salary"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="text" id="emp-phone" class="form-control" placeholder="0300-1234567">
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="btn-cancel-modal" class="btn btn-outline">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Employee</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/employees.js"></script>
+  <script src="js/helper.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = Auth.guard('admin');
+      if (!user) return;
+
+      Auth.initUI();
+      SmartHelper.init(user);
+      EmployeeModule.init();
+      EmployeeModule.populateDepartments();
+
+      const mobBtn = document.getElementById('mobile-menu-btn');
+      const sidebar = document.getElementById('sidebar');
+      if (mobBtn && sidebar) {
+        mobBtn.addEventListener('click', () => sidebar.classList.toggle('mobile-open'));
+      }
+    });
+  </script>
+</body>
+</html>

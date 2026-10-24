@@ -3,274 +3,274 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hackathon Starter Kit — HTML, CSS, JS & Supabase</title>
+  <title>HCM Lite — Sign In & Setup</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .auth-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: radial-gradient(circle at 10% 20%, rgba(2, 132, 199, 0.08) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(13, 148, 136, 0.08) 0%, transparent 40%),
+                  var(--bg-main);
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      box-shadow: var(--shadow-xl);
+    }
+    .auth-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+    }
+    .auth-logo-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .auth-header h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.4rem;
+    }
+    .auth-header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Animated Aurora Background -->
-  <div class="bg-aurora" aria-hidden="true">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
-    <div class="orb orb-4"></div>
-  </div>
+  <div class="auth-wrapper">
+    <div class="auth-card">
 
-  <!-- Supabase Config Warning -->
-  <div id="supabase-warning-banner" class="warning-banner hidden">
-    <i class="fa-solid fa-triangle-exclamation"></i>
-    <span><strong>Supabase Config Missing:</strong> Open <code>js/config.js</code> and enter your Supabase URL & Anon Key.</span>
-  </div>
-
-  <!-- ───── NAVBAR ───── -->
-  <header class="navbar">
-    <div class="container nav-container">
-      <a href="index.html" class="brand-logo">
-        <span class="brand-icon"><i class="fa-solid fa-bolt"></i></span>
-        <span>HackStarter</span>
-      </a>
-
-      <div id="nav-logged-out" class="nav-actions">
-        <a href="login.html" class="btn btn-outline">Sign In</a>
-        <a href="signup.html" class="btn btn-primary">Get Started</a>
-      </div>
-
-      <div id="nav-logged-in" class="nav-actions hidden">
-        <div class="user-profile-badge">
-          <img id="user-avatar" class="user-avatar" src="" alt="Avatar">
-          <span id="user-greeting" style="font-weight: 600; font-size: 0.88rem;">Khushamdeed!</span>
-        </div>
-        <button type="button" id="btn-logout" class="btn btn-danger-outline">
-          <i class="fa-solid fa-arrow-right-from-bracket"></i> Logout
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- ───── MAIN CONTENT ───── -->
-  <main class="container">
-
-    <!-- HERO -->
-    <section class="hero-section">
-      <div class="hero-badge">
-        <i class="fa-solid fa-sparkles"></i> Ready for Tomorrow's Hackathon
-      </div>
-
-      <h1 class="hero-title">
-        Ship Your Next App<br>
-        <span class="gradient-text">At Hackathon Speed</span>
-      </h1>
-
-      <p class="hero-subtitle">
-        Pre-wired Authentication, polished components, and Supabase CRUD helpers — so you can focus on building, not boilerplate.
-      </p>
-
-      <!-- Guest -->
-      <div id="guest-welcome-section" class="hero-buttons">
-        <a href="signup.html" class="btn btn-primary" style="padding: 0.85rem 2rem; font-size: 1rem;">
-          <i class="fa-solid fa-rocket"></i> Get Started Free
-        </a>
-        <a href="login.html" class="btn btn-secondary" style="padding: 0.85rem 2rem; font-size: 1rem;">
-          <i class="fa-solid fa-right-to-bracket"></i> Sign In
-        </a>
-      </div>
-
-      <!-- Stats -->
-      <div class="stats-bar">
-        <div class="stat-item">
-          <div class="stat-value">5+</div>
-          <div class="stat-label">Ready Pages</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">CRUD</div>
-          <div class="stat-label">Helpers Built-in</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">0</div>
-          <div class="stat-label">Setup Headaches</div>
-        </div>
-        <div class="stat-item">
-          <div class="stat-value">∞</div>
-          <div class="stat-label">Possibilities</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Auth Protected Section -->
-    <section id="auth-protected-section" class="hidden" style="margin-bottom: 2.5rem;">
-      <div class="card" style="border-color: rgba(139, 92, 246, 0.35); background: linear-gradient(180deg, rgba(15,23,42,0.8), rgba(5,8,22,0.9));">
-        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
-          <div>
-            <h2 style="font-size: 1.45rem; margin-bottom: 0.4rem;">
-              🎉 Authenticated Successfully!
-            </h2>
-            <p class="text-secondary" style="font-size: 0.95rem;">
-              Your Supabase session is active. Build your hackathon project on top of this starter kit!
-            </p>
-          </div>
-          <a href="login.html" class="btn btn-outline" style="font-size: 0.85rem;">Switch Account</a>
-        </div>
-      </div>
-    </section>
-
-    <!-- FEATURES GRID -->
-    <section style="margin: 2rem 0 3rem;">
-      <div class="section-header">
-        <div class="section-tag"><i class="fa-solid fa-cubes"></i> What's Included</div>
-        <h2 class="section-title">Everything You Need to Win</h2>
-        <p class="section-subtitle">Pre-built components so you can hit the ground running when the clock starts ticking.</p>
-      </div>
-
-      <div class="grid-cards">
-        <div class="card">
-          <div class="card-icon"><i class="fa-solid fa-shield-halved"></i></div>
-          <h3 class="card-title">Secure Auth Flow</h3>
-          <p class="card-description">
-            Complete Sign Up & Sign In with password validation, sessions, and logout — powered by Supabase Auth.
-          </p>
-        </div>
-
-        <div class="card">
-          <div class="card-icon"><i class="fa-solid fa-palette"></i></div>
-          <h3 class="card-title">Premium UI Kit</h3>
-          <p class="card-description">
-            Glassmorphism cards, aurora background, animated gradients, toast alerts — all dark-mode first.
-          </p>
-        </div>
-
-        <div class="card">
-          <div class="card-icon"><i class="fa-solid fa-database"></i></div>
-          <h3 class="card-title">CRUD Helper Functions</h3>
-          <p class="card-description">
-            Universal <code>Database.getAll()</code>, <code>.create()</code>, <code>.update()</code>, <code>.delete()</code> ready to use.
-          </p>
-        </div>
-
-        <div class="card">
-          <div class="card-icon"><i class="fa-solid fa-font"></i></div>
-          <h3 class="card-title">Typography & Icons</h3>
-          <p class="card-description">
-            <strong>Plus Jakarta Sans</strong>, <strong>Inter</strong>, <strong>JetBrains Mono</strong> + <strong>Font Awesome 6</strong> pre-loaded.
-          </p>
-        </div>
-
-        <div class="card">
-          <div class="card-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
-          <h3 class="card-title">Fully Responsive</h3>
-          <p class="card-description">
-            Every component adapts beautifully from 320px phones to ultrawide monitors — zero extra work.
-          </p>
-        </div>
-
-        <div class="card">
-          <div class="card-icon"><i class="fa-solid fa-bolt"></i></div>
-          <h3 class="card-title">Zero Dependencies</h3>
-          <p class="card-description">
-            Pure HTML, CSS, Vanilla JS — no npm, no bundler, no frameworks. Just open in browser and go.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- INTERACTIVE DEMO -->
-    <section id="crud-section" class="demo-crud-card">
-      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem;">
+      <div class="auth-brand">
+        <div class="auth-logo-icon"><i class="fa-solid fa-users-gear"></i></div>
         <div>
-          <h2 style="font-size: 1.35rem;">
-            <i class="fa-solid fa-list-check text-primary"></i> Quick Test Component
-          </h2>
-          <p class="text-secondary" style="font-size: 0.88rem; margin-top: 0.25rem;">
-            Add & delete items to test the UI components and toast notifications.
-          </p>
-        </div>
-        <span class="hero-badge" style="margin: 0; font-size: 0.78rem;">
-          <i class="fa-solid fa-play"></i> Interactive Demo
-        </span>
-      </div>
-
-      <form id="demo-crud-form" class="demo-form">
-        <input type="text" id="demo-item-input" class="form-input" 
-               placeholder="Type a task, e.g., Design database schema..." required>
-        <button type="submit" class="btn btn-primary">
-          <i class="fa-solid fa-plus"></i> Add
-        </button>
-      </form>
-
-      <ul id="demo-items-list" class="demo-list"></ul>
-    </section>
-
-    <!-- CHEAT SHEET -->
-    <section style="margin-bottom: 4rem;">
-      <div class="section-header">
-        <div class="section-tag"><i class="fa-solid fa-terminal"></i> Quick Reference</div>
-        <h2 class="section-title">Supabase Cheat Sheet</h2>
-        <p class="section-subtitle">Copy-paste these snippets during your hackathon to move fast.</p>
-      </div>
-
-      <div class="grid-cards">
-        <div class="card">
-          <h4 style="margin-bottom: 0.5rem; color: #67e8f9;">
-            <i class="fa-solid fa-download" style="font-size: 0.85rem;"></i> SELECT (Read)
-          </h4>
-          <p class="card-description">Fetch all rows from any table:</p>
-          <pre class="code-preview">const { data, error } = await supabaseClient
-  .from('your_table')
-  .select('*')
-  .order('created_at', { ascending: false });</pre>
-        </div>
-
-        <div class="card">
-          <h4 style="margin-bottom: 0.5rem; color: #67e8f9;">
-            <i class="fa-solid fa-upload" style="font-size: 0.85rem;"></i> INSERT (Create)
-          </h4>
-          <p class="card-description">Add a new row:</p>
-          <pre class="code-preview">const { data, error } = await supabaseClient
-  .from('your_table')
-  .insert([{ title: 'Hello', user_id: currentUser.id }]);</pre>
-        </div>
-
-        <div class="card">
-          <h4 style="margin-bottom: 0.5rem; color: #67e8f9;">
-            <i class="fa-solid fa-pen" style="font-size: 0.85rem;"></i> UPDATE (Edit)
-          </h4>
-          <p class="card-description">Modify an existing row:</p>
-          <pre class="code-preview">const { data, error } = await supabaseClient
-  .from('your_table')
-  .update({ status: 'completed' })
-  .eq('id', recordId);</pre>
-        </div>
-
-        <div class="card">
-          <h4 style="margin-bottom: 0.5rem; color: #67e8f9;">
-            <i class="fa-solid fa-trash" style="font-size: 0.85rem;"></i> DELETE (Remove)
-          </h4>
-          <p class="card-description">Delete a specific row:</p>
-          <pre class="code-preview">const { error } = await supabaseClient
-  .from('your_table')
-  .delete()
-  .eq('id', recordId);</pre>
+          <h2 style="font-size: 1.35rem; line-height: 1.1;">HCM Lite</h2>
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Saylani Hackathon</span>
         </div>
       </div>
-    </section>
 
-  </main>
+      <!-- ───── STATE 1: FIRST-RUN SETUP FORM ───── -->
+      <div id="first-run-section" class="hidden">
+        <div class="auth-header">
+          <h1>First-Run Setup</h1>
+          <p>Welcome! Set up your company profile and create the Administrator account to get started.</p>
+        </div>
 
-  <!-- ───── FOOTER ───── -->
-  <footer class="footer">
-    <div class="container footer-content">
-      <p>© 2026 HackStarter — Built for speed. Best of luck! 🚀</p>
-      <div class="footer-links">
-        <a href="https://supabase.com/docs" target="_blank"><i class="fa-solid fa-book"></i> Supabase Docs</a>
-        <a href="https://developer.mozilla.org" target="_blank"><i class="fa-brands fa-firefox-browser"></i> MDN</a>
+        <form id="setup-form">
+          <div class="form-group">
+            <label class="form-label">Company Name *</label>
+            <input type="text" id="setup-company-name" class="form-control" placeholder="e.g. Saylani Welfare International Trust" required>
+            <span class="field-error" id="err-setup-company"></span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Office Start Time</label>
+              <input type="time" id="setup-start-time" class="form-control" value="09:00" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Grace Minutes</label>
+              <input type="number" id="setup-grace-minutes" class="form-control" value="15" min="0" max="60" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Yearly Leave Quota (Days)</label>
+            <input type="number" id="setup-leave-quota" class="form-control" value="20" min="1" max="60" required>
+          </div>
+
+          <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
+
+          <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--primary);">
+            <i class="fa-solid fa-user-shield mr-1"></i> Admin Credentials
+          </h3>
+
+          <div class="form-group">
+            <label class="form-label">Admin Full Name *</label>
+            <input type="text" id="setup-admin-name" class="form-control" placeholder="e.g. Muhammad Ali" required>
+            <span class="field-error" id="err-setup-name"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Admin Email *</label>
+            <input type="email" id="setup-admin-email" class="form-control" placeholder="admin@saylani.org" required>
+            <span class="field-error" id="err-setup-email"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Admin Password *</label>
+            <input type="password" id="setup-admin-password" class="form-control" placeholder="Create a secure password" minlength="4" required>
+            <span class="field-error" id="err-setup-password"></span>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.5rem;">
+            <i class="fa-solid fa-rocket mr-1"></i> Complete Setup & Launch
+          </button>
+        </form>
       </div>
+
+      <!-- ───── STATE 2: REGULAR LOGIN FORM ───── -->
+      <div id="login-section" class="hidden">
+        <div class="auth-header">
+          <h1 id="login-company-title">Sign In</h1>
+          <p>Enter your credentials to access your portal</p>
+        </div>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <div style="position: relative;">
+              <input type="email" id="login-email" class="form-control" placeholder="you@company.com" required>
+            </div>
+            <span class="field-error" id="err-login-email"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+            <span class="field-error" id="err-login-password"></span>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.75rem;">
+            <i class="fa-solid fa-arrow-right-to-bracket mr-1"></i> Sign In
+          </button>
+        </form>
+
+        <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border-light); font-size: 0.82rem; color: var(--text-muted); text-align: center;">
+          <p><strong>Note for Judges / Reviewers:</strong></p>
+          <p style="margin-top: 0.35rem;">Log in as <strong>Admin</strong> to manage staff & approvals, or as registered <strong>Employee</strong> for self-service.</p>
+          <div style="margin-top: 1rem;">
+            <button type="button" id="btn-reset-app" class="btn btn-sm btn-outline text-danger">
+              <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Reset App Data (Fresh Start)
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
-  </footer>
+  </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="js/config.js"></script>
-  <script src="js/supabaseClient.js"></script>
-  <script src="js/toast.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const isSetup = Storage.isSetupComplete();
+      const firstRunSec = document.getElementById('first-run-section');
+      const loginSec = document.getElementById('login-section');
+
+      if (!isSetup) {
+        firstRunSec.classList.remove('hidden');
+        loginSec.classList.add('hidden');
+      } else {
+        // If already logged in, redirect
+        const session = Storage.getSession();
+        if (session) {
+          window.location.href = session.role === 'admin' ? 'admin.html' : 'employee.html';
+          return;
+        }
+
+        const comp = Storage.getCompany();
+        if (comp) {
+          document.getElementById('login-company-title').textContent = comp.name;
+        }
+        loginSec.classList.remove('hidden');
+        firstRunSec.classList.add('hidden');
+      }
+
+      // Handle First-Run Setup
+      const setupForm = document.getElementById('setup-form');
+      if (setupForm) {
+        setupForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const companyName = document.getElementById('setup-company-name').value.trim();
+          const startTime = document.getElementById('setup-start-time').value;
+          const graceMinutes = parseInt(document.getElementById('setup-grace-minutes').value) || 15;
+          const leaveQuota = parseInt(document.getElementById('setup-leave-quota').value) || 20;
+
+          const adminName = document.getElementById('setup-admin-name').value.trim();
+          const adminEmail = document.getElementById('setup-admin-email').value.trim().toLowerCase();
+          const adminPassword = document.getElementById('setup-admin-password').value;
+
+          // Save Company
+          Storage.saveCompany({
+            name: companyName,
+            startTime,
+            graceMinutes,
+            leaveQuota,
+            workingDays: 'Mon-Fri',
+            createdAt: new Date().toISOString()
+          });
+
+          // Create Admin User
+          const adminUser = Storage.addUser({
+            name: adminName,
+            email: adminEmail,
+            password: adminPassword,
+            role: 'admin',
+            department: 'Management',
+            designation: 'System Administrator',
+            salary: 150000
+          });
+
+          // Set active session
+          Storage.setSession(adminUser);
+
+          alert('Setup completed successfully! Welcome to HCM Lite.');
+          window.location.href = 'admin.html';
+        });
+      }
+
+      // Handle Login
+      const loginForm = document.getElementById('login-form');
+      if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const email = document.getElementById('login-email').value.trim();
+          const password = document.getElementById('login-password').value;
+
+          try {
+            const user = Auth.login(email, password);
+            window.location.href = user.role === 'admin' ? 'admin.html' : 'employee.html';
+          } catch (err) {
+            document.getElementById('err-login-password').textContent = err.message;
+          }
+        });
+      }
+
+      // Handle Reset Data
+      const resetBtn = document.getElementById('btn-reset-app');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          if (confirm('Are you sure you want to completely clear localStorage? The app will return to first-run setup.')) {
+            Storage.resetAllData();
+            window.location.reload();
+          }
+        });
+      }
+    });
+  </script>
 </body>
 </html>
