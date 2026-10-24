@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AMC Tech — Sign In & Setup</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .auth-wrapper {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1.5rem;
+      background: radial-gradient(circle at 10% 20%, rgba(2, 132, 199, 0.08) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(13, 148, 136, 0.08) 0%, transparent 40%),
+                  var(--bg-main);
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 480px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      box-shadow: var(--shadow-xl);
+    }
+    .auth-brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.75rem;
+      margin-bottom: 1.75rem;
+    }
+    .auth-logo-icon {
+      width: 44px;
+      height: 44px;
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: #fff;
+      border-radius: var(--radius-md);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35);
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .auth-header h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.4rem;
+    }
+    .auth-header p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+
+      <!-- Application Branding Header -->
+      <div class="auth-brand">
+        <div class="auth-logo-icon"><i class="fa-solid fa-users-gear"></i></div>
+        <div>
+          <h2 style="font-size: 1.35rem; line-height: 1.1;">AMC Tech</h2>
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Human Capital Management</span>
+        </div>
+      </div>
+
+      <!-- First-Run Company & Admin Setup Section -->
+      <div id="first-run-section" class="hidden">
+        <div class="auth-header">
+          <h1>First-Run Setup</h1>
+          <p>Welcome! Set up your company profile and create the Administrator account to get started.</p>
+        </div>
+
+        <form id="setup-form">
+          <div class="form-group">
+            <label class="form-label">Company Name *</label>
+            <input type="text" id="setup-company-name" class="form-control" placeholder="e.g. AMC Tech" value="AMC Tech" required>
+            <span class="field-error" id="err-setup-company"></span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Office Start Time</label>
+              <input type="time" id="setup-start-time" class="form-control" value="09:00" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Grace Minutes</label>
+              <input type="number" id="setup-grace-minutes" class="form-control" value="15" min="0" max="60" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Yearly Leave Quota (Days)</label>
+            <input type="number" id="setup-leave-quota" class="form-control" value="20" min="1" max="60" required>
+          </div>
+
+          <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 1.5rem 0;">
+
+          <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--primary);">
+            <i class="fa-solid fa-user-shield mr-1"></i> Admin Credentials
+          </h3>
+
+          <div class="form-group">
+            <label class="form-label">Admin Full Name *</label>
+            <input type="text" id="setup-admin-name" class="form-control" placeholder="e.g. Muhammad Ali" required>
+            <span class="field-error" id="err-setup-name"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Admin Email *</label>
+            <input type="email" id="setup-admin-email" class="form-control" placeholder="admin@amctech.com" required>
+            <span class="field-error" id="err-setup-email"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Admin Password *</label>
+            <input type="password" id="setup-admin-password" class="form-control" placeholder="Create a secure password" minlength="4" required>
+            <span class="field-error" id="err-setup-password"></span>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.5rem;">
+            <i class="fa-solid fa-rocket mr-1"></i> Complete Setup & Launch
+          </button>
+        </form>
+      </div>
+
+      <!-- User Authentication / Login Section -->
+      <div id="login-section" class="hidden">
+        <div class="auth-header">
+          <h1 id="login-company-title">Sign In</h1>
+          <p>Enter your credentials to access your portal</p>
+        </div>
+
+        <form id="login-form">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <div style="position: relative;">
+              <input type="email" id="login-email" class="form-control" placeholder="you@company.com" required>
+            </div>
+            <span class="field-error" id="err-login-email"></span>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+            <span class="field-error" id="err-login-password"></span>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.75rem;">
+            <i class="fa-solid fa-arrow-right-to-bracket mr-1"></i> Sign In
+          </button>
+        </form>
+
+        <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border-light); font-size: 0.82rem; color: var(--text-muted); text-align: center;">
+          <p>Log in as <strong>Admin</strong> to manage staff & approvals, or as registered <strong>Employee</strong> for self-service.</p>
+          <div style="margin-top: 1rem;">
+            <button type="button" id="btn-reset-app" class="btn btn-sm btn-outline text-danger">
+              <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Reset App Data (Fresh Start)
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="../js/toast.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Check setup status: show first-run form if not configured, otherwise show login
+      const isSetup = Storage.isSetupComplete();
+      const firstRunSec = document.getElementById('first-run-section');
+      const loginSec = document.getElementById('login-section');
+
+      if (!isSetup) {
+        firstRunSec.classList.remove('hidden');
+        loginSec.classList.add('hidden');
+      } else {
+        // Redirect if an active session already exists
+        const session = Storage.getSession();
+        if (session) {
+          window.location.href = session.role === 'admin' ? 'admin.html' : 'employee.html';
+          return;
+        }
+
+        const comp = Storage.getCompany();
+        if (comp) {
+          document.getElementById('login-company-title').textContent = comp.name;
+        }
+        loginSec.classList.remove('hidden');
+        firstRunSec.classList.add('hidden');
+      }
+
+      // Handle First-Run Setup form submission
+      const setupForm = document.getElementById('setup-form');
+      if (setupForm) {
+        setupForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const companyName = document.getElementById('setup-company-name').value.trim() || 'AMC Tech';
+          const startTime = document.getElementById('setup-start-time').value;
+          const graceMinutes = parseInt(document.getElementById('setup-grace-minutes').value) || 15;
+          const leaveQuota = parseInt(document.getElementById('setup-leave-quota').value) || 20;
+
+          const adminName = document.getElementById('setup-admin-name').value.trim();
+          const adminEmail = document.getElementById('setup-admin-email').value.trim().toLowerCase();
+          const adminPassword = document.getElementById('setup-admin-password').value;
+
+          // Save Company Profile
+          Storage.saveCompany({
+            name: companyName,
+            startTime,
+            graceMinutes,
+            leaveQuota,
+            workingDays: 'Mon-Fri',
+            createdAt: new Date().toISOString()
+          });
+
+          // Create Master Administrator Account
+          const adminUser = Storage.addUser({
+            name: adminName,
+            email: adminEmail,
+            password: adminPassword,
+            role: 'admin',
+            department: 'Management',
+            designation: 'System Administrator',
+            salary: 150000
+          });
+
+          // Set active session
+          Storage.setSession(adminUser);
+
+          Toast.success('Setup completed successfully! Welcome to AMC Tech.');
+          setTimeout(() => {
+            window.location.href = 'admin.html';
+          }, 1200);
+        });
+      }
+
+      // Handle Login form submission
+      const loginForm = document.getElementById('login-form');
+      if (loginForm) {
+        loginForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const email = document.getElementById('login-email').value.trim();
+          const password = document.getElementById('login-password').value;
+
+          try {
+            const user = Auth.login(email, password);
+            Toast.success(`Welcome back, ${user.name}!`);
+            setTimeout(() => {
+              window.location.href = user.role === 'admin' ? 'admin.html' : 'employee.html';
+            }, 800);
+          } catch (err) {
+            document.getElementById('err-login-password').textContent = err.message;
+            Toast.error(err.message);
+          }
+        });
+      }
+
+      // Handle Reset All App Data with custom CSS confirm dialog
+      const resetBtn = document.getElementById('btn-reset-app');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          showConfirm('Are you sure you want to completely clear localStorage? The application will return to first-run setup.', {
+            title: 'Reset Application Data',
+            type: 'danger',
+            confirmText: 'Yes, Wipe Everything',
+            cancelText: 'Cancel',
+            onConfirm: () => {
+              Storage.resetAllData();
+              Toast.info('All data wiped. Reloading...');
+              setTimeout(() => {
+                window.location.reload();
+              }, 800);
+            }
+          });
+        });
+      }
+    });
+  </script>
+</body>
+</html>

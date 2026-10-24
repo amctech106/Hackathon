@@ -70,22 +70,26 @@ Click the floating **AI Assistant** button at the bottom-right of either dashboa
 ## 📁 Project Architecture & File Map
 
 ```text
-├── index.html          # Login & First-run company/admin setup
-├── admin.html          # Admin dashboard, KPIs, Chart.js, Announcements
-├── employees.html      # Employee directory, Add/Edit/Delete, CSV export
-├── leaves.html         # Leave requests approval inbox with comments
-├── settings.html       # Organization rules, timings, quota & demo reset
-├── employee.html       # Employee self-service, check-in/out, camera modal
-├── payslip.html        # Monthly salary statement with print layout
+├── index.html              # Root portal entry / auto-redirector to pages/
+├── server.js               # Zero-dependency local Node server
+├── pages/                  # All Application Pages (Assignment Requirement)
+│   ├── index.html          # Login & First-run company/admin setup
+│   ├── admin.html          # Admin dashboard, KPIs, Chart.js, Announcements
+│   ├── employees.html      # Employee directory, Add/Edit/Delete, CSV export
+│   ├── leaves.html         # Leave requests approval inbox with comments
+│   ├── settings.html       # Organization rules, timings, quota & demo reset
+│   ├── employee.html       # Employee self-service, check-in/out, camera modal
+│   └── payslip.html        # Monthly salary statement with print layout
 ├── css/
-│   └── style.css       # Complete modern enterprise design system & dark mode
+│   └── style.css           # Complete modern enterprise design system & dark mode
 └── js/
-    ├── storage.js      # LocalStorage engine, CRUD, business rules & math
-    ├── auth.js         # Session management & role security guards
-    ├── employees.js    # Directory search, department filters & modal logic
-    ├── attendance.js   # Live clock, late penalty, camera preview & CSV
-    ├── leave.js        # Leave validations (no overlap, weekend skipping)
-    └── helper.js       # Smart Helper chatbot answering from live data
+    ├── storage.js          # LocalStorage engine, CRUD, business rules & math
+    ├── auth.js             # Session management & role security guards
+    ├── toast.js            # Custom styled toasts & modal alert dialogs
+    ├── employees.js        # Directory search, department filters & modal logic
+    ├── attendance.js       # Live clock, late penalty, camera preview & CSV
+    ├── leave.js            # Leave validations (no overlap, weekend skipping)
+    └── helper.js           # Smart Helper chatbot answering from live data
 ```
 
 ---
