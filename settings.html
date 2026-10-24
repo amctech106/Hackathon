@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Company Settings — HCM Lite</title>
+  <title>Company Settings — AMC Tech</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -11,12 +11,12 @@
 
   <div class="app-container">
 
-    <!-- ───── SIDEBAR ───── -->
+    <!-- Navigation Sidebar -->
     <aside class="app-sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-logo"><i class="fa-solid fa-users-gear"></i></div>
         <div>
-          <div class="sidebar-brand-name js-company-name">HCM Lite</div>
+          <div class="sidebar-brand-name js-company-name">AMC Tech</div>
           <div class="sidebar-brand-sub">Admin Workspace</div>
         </div>
       </div>
@@ -61,10 +61,10 @@
       </div>
     </aside>
 
-    <!-- ───── MAIN CONTENT ───── -->
+    <!-- Main Content Area -->
     <main class="app-main">
 
-      <!-- Topbar -->
+      <!-- Topbar Header -->
       <header class="app-topbar">
         <div class="topbar-left">
           <button type="button" id="mobile-menu-btn" class="btn btn-icon btn-outline mobile-menu-btn" style="display: none;">
@@ -127,7 +127,7 @@
             <hr style="border: 0; border-top: 1px solid var(--border-light); margin: 1.5rem 0;">
 
             <h3 style="font-size: 1rem; margin-bottom: 0.75rem; color: var(--secondary);">
-              <i class="fa-solid fa-location-dot mr-1"></i> Office Geofence (Optional Bonus)
+              <i class="fa-solid fa-location-dot mr-1"></i> Office Geofence Location
             </h3>
             <p class="text-muted small" style="margin-bottom: 1rem;">Used for location verification during camera-assisted mobile/web check-ins.</p>
 
@@ -154,13 +154,13 @@
           </form>
         </div>
 
-        <!-- Factory Reset Box -->
+        <!-- Data Reset Section -->
         <div class="card" style="border-color: rgba(239, 68, 68, 0.3); background-color: var(--danger-bg);">
           <div class="card-header" style="border-bottom-color: rgba(239, 68, 68, 0.2);">
-            <h2 class="card-title text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone / Demo Reset</h2>
+            <h2 class="card-title text-danger"><i class="fa-solid fa-triangle-exclamation"></i> Danger Zone / System Reset</h2>
           </div>
           <p style="font-size: 0.88rem; color: var(--danger); margin-bottom: 1rem;">
-            Clears all company records, employees, attendance, and leaves from browser localStorage. This allows judges to test the app from scratch.
+            Clears all company records, employees, attendance, and leaves from browser localStorage to restart setup.
           </p>
           <button type="button" id="btn-danger-reset" class="btn btn-danger">
             <i class="fa-solid fa-trash-can mr-1"></i> Wipe All Data & Re-run Setup
@@ -177,13 +177,15 @@
   <script src="js/helper.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Role Authentication Guard: ensure only administrator has access
       const user = Auth.guard('admin');
       if (!user) return;
 
+      // Initialize UI and Smart Helper
       Auth.initUI();
       SmartHelper.init(user);
 
-      // Load Settings into form
+      // Populate current settings into configuration form
       const comp = Storage.getCompany() || {};
       document.getElementById('setting-company-name').value = comp.name || '';
       document.getElementById('setting-start-time').value = comp.startTime || '09:00';
@@ -194,12 +196,12 @@
       document.getElementById('setting-office-lng').value = comp.officeLng || '';
       document.getElementById('setting-radius').value = comp.radius || 150;
 
-      // Save Settings Form
+      // Handle settings form update submission
       document.getElementById('settings-form').addEventListener('submit', (e) => {
         e.preventDefault();
         const updated = {
           ...comp,
-          name: document.getElementById('setting-company-name').value.trim(),
+          name: document.getElementById('setting-company-name').value.trim() || 'AMC Tech',
           startTime: document.getElementById('setting-start-time').value,
           graceMinutes: parseInt(document.getElementById('setting-grace-minutes').value) || 15,
           leaveQuota: parseInt(document.getElementById('setting-leave-quota').value) || 20,
@@ -214,14 +216,15 @@
         window.location.reload();
       });
 
-      // Reset App
+      // Handle complete database wipe & reset
       document.getElementById('btn-danger-reset').addEventListener('click', () => {
-        if (confirm('Are you sure you want to completely erase all data? All mock employees, attendance, and settings will be permanently wiped.')) {
+        if (confirm('Are you sure you want to completely erase all data? All employees, attendance records, and settings will be permanently wiped.')) {
           Storage.resetAllData();
           window.location.href = 'index.html';
         }
       });
 
+      // Mobile responsive sidebar toggle
       const mobBtn = document.getElementById('mobile-menu-btn');
       const sidebar = document.getElementById('sidebar');
       if (mobBtn && sidebar) {

@@ -1,17 +1,13 @@
 /**
- * HCM Lite - Authentication & Access Guard
+ * AMC Tech - Authentication & Role Access Guard
  * Role-based access control (Admin / Employee)
  */
 
 const Auth = {
-  /**
-   * Guards a page based on role requirement:
-   * @param {'admin'|'employee'|'any'} requiredRole
-   */
+  // Page authentication and role permission guard
   guard(requiredRole = 'any') {
-    // 1. Check if first-run setup is done
+    // 1. Verify company profile setup
     if (!Storage.isSetupComplete()) {
-      // If setup is not done and we're not already on index.html, redirect
       if (!window.location.pathname.endsWith('index.html') && !window.location.pathname.endsWith('/')) {
         window.location.href = 'index.html';
         return null;
@@ -19,7 +15,7 @@ const Auth = {
       return null;
     }
 
-    // 2. Check active session
+    // 2. Verify active user session
     const session = Storage.getSession();
     const isIndexPage = window.location.pathname.endsWith('index.html') || window.location.pathname.endsWith('/');
 
@@ -30,7 +26,7 @@ const Auth = {
       return null;
     }
 
-    // If logged in and on index.html, redirect to appropriate dashboard
+    // If already logged in and visiting index.html, redirect to appropriate workspace
     if (isIndexPage) {
       if (session.role === 'admin') {
         window.location.href = 'admin.html';
@@ -40,8 +36,7 @@ const Auth = {
       return session;
     }
 
-    // 3. Role enforcement
-    // "If an Employee opens an Admin page, send them back to their own dashboard."
+    // 3. Role route enforcement: redirect unauthorized roles to their respective dashboard
     if (requiredRole === 'admin' && session.role !== 'admin') {
       window.location.href = 'employee.html';
       return null;
@@ -131,11 +126,24 @@ const Auth = {
       });
     }
 
-    // Hook logout buttons
+    // Hook logout buttons with custom CSS modal
     document.querySelectorAll('.js-logout-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
-        if (confirm('Are you sure you want to log out?')) {
+        if (typeof showConfirm === 'function') {
+          showConfirm('Are you sure you want to sign out of your AMC Tech workspace?', {
+            title: 'Sign Out Confirmation',
+            type: 'warning',
+            confirmText: 'Sign Out',
+            cancelText: 'Stay Logged In',
+            onConfirm: () => {
+              if (window.Toast) Toast.info('Signing out...');
+              setTimeout(() => {
+                Auth.logout();
+              }, 600);
+            }
+          });
+        } else if (confirm('Are you sure you want to log out?')) {
           Auth.logout();
         }
       });

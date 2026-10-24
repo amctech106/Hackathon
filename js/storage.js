@@ -1,7 +1,6 @@
 /**
- * HCM Lite - Storage & Data Management Module
- * Uses browser localStorage for zero-backend architecture.
- * Starts completely clean without dummy data.
+ * AMC Tech - Storage & Data Management Module
+ * Handles browser localStorage persistence for company settings, users, attendance, leaves, and payroll.
  */
 
 const STORAGE_KEYS = {
@@ -15,7 +14,9 @@ const STORAGE_KEYS = {
 };
 
 const Storage = {
-  // ── COMPANY SETTINGS ──
+  // ----------------------------------------------------
+  // 1. Company Profile & Settings Management
+  // ----------------------------------------------------
   getCompany() {
     const data = localStorage.getItem(STORAGE_KEYS.COMPANY);
     return data ? JSON.parse(data) : null;
@@ -32,7 +33,9 @@ const Storage = {
     return !!(comp && admin);
   },
 
-  // ── USERS (Admin & Employees) ──
+  // ----------------------------------------------------
+  // 2. User Accounts & Credentials Management (Admin / Employee)
+  // ----------------------------------------------------
   getUsers() {
     const data = localStorage.getItem(STORAGE_KEYS.USERS);
     return data ? JSON.parse(data) : [];
@@ -103,7 +106,9 @@ const Storage = {
     this.saveUsers(users);
   },
 
-  // ── ATTENDANCE ──
+  // ----------------------------------------------------
+  // 3. Attendance Tracking & Work Hours Logic
+  // ----------------------------------------------------
   getAttendance() {
     const data = localStorage.getItem(STORAGE_KEYS.ATTENDANCE);
     return data ? JSON.parse(data) : [];
@@ -131,11 +136,7 @@ const Storage = {
     return this.getAttendance().find(r => String(r.employeeId) === String(employeeId) && r.date === today) || null;
   },
 
-  /**
-   * Rule:
-   * Late if check-in is after office start + grace minutes (e.g. 09:00 + 15 min = 09:15)
-   * One check-in per day (second check-in = error)
-   */
+  // Record daily check-in with late arrival detection based on company grace threshold
   checkIn(employeeId, extra = {}) {
     const today = this.getTodayString();
     const records = this.getAttendance();
@@ -145,7 +146,7 @@ const Storage = {
       throw new Error('You have already checked in today.');
     }
 
-    const company = this.getCompany() || { startTime: '09:00', graceMinutes: 15 };
+    const company = this.getCompany() || { name: 'AMC Tech', startTime: '09:00', graceMinutes: 15 };
     const now = new Date();
     const checkInTime = now.toTimeString().split(' ')[0].substring(0, 5); // HH:MM
 
@@ -174,11 +175,7 @@ const Storage = {
     return newRecord;
   },
 
-  /**
-   * Rule:
-   * Check-out only after check-in.
-   * Work hours = out - in; under 5 hours = half day.
-   */
+  // Record check-out time and calculate total working hours
   checkOut(employeeId) {
     const today = this.getTodayString();
     const records = this.getAttendance();
@@ -204,7 +201,7 @@ const Storage = {
     records[recordIndex].checkOut = checkOutTime;
     records[recordIndex].workHours = hours;
 
-    // Rule: under 5 hours = half day
+    // Automatically mark half day if total work duration is under 5 hours
     if (hours < 5) {
       records[recordIndex].status = 'half_day';
     }
@@ -213,7 +210,9 @@ const Storage = {
     return records[recordIndex];
   },
 
-  // ── LEAVE MANAGEMENT ──
+  // ----------------------------------------------------
+  // 4. Leave Applications & Balance Tracking
+  // ----------------------------------------------------
   getLeaves() {
     const data = localStorage.getItem(STORAGE_KEYS.LEAVES);
     return data ? JSON.parse(data) : [];
@@ -223,7 +222,7 @@ const Storage = {
     localStorage.setItem(STORAGE_KEYS.LEAVES, JSON.stringify(leaves));
   },
 
-  // Working days calculator (skips Saturday & Sunday)
+  // Calculate working days between two dates, excluding weekends (Saturday and Sunday)
   countWorkingDays(fromDateStr, toDateStr) {
     const start = new Date(fromDateStr);
     const end = new Date(toDateStr);
@@ -241,8 +240,9 @@ const Storage = {
     return count;
   },
 
+  // Calculates remaining quota balance after deducting approved leave days
   getEmployeeLeaveBalance(employeeId) {
-    const company = this.getCompany() || { leaveQuota: 20 };
+    const company = this.getCompany() || { name: 'AMC Tech', leaveQuota: 20 };
     const quota = Number(company.leaveQuota || 20);
 
     const leaves = this.getLeaves().filter(
@@ -254,13 +254,7 @@ const Storage = {
     return { quota, used: usedDays, remaining };
   },
 
-  /**
-   * Leave Application Rules:
-   * 1. From date <= To date
-   * 2. Count working days only (skip weekends)
-   * 3. Cannot overlap another leave (pending or approved)
-   * 4. Cannot go over yearly quota set by Admin
-   */
+  // Submit a leave application with overlap and balance validation
   applyLeave(data) {
     const { employeeId, type, fromDate, toDate, reason } = data;
 
@@ -277,7 +271,7 @@ const Storage = {
       throw new Error('Selected period has no working days (e.g. only weekend days).');
     }
 
-    // Overlap check
+    // Overlap validation with existing active leave applications
     const existing = this.getLeaves().filter(
       l => String(l.employeeId) === String(employeeId) && l.status !== 'rejected'
     );
@@ -290,7 +284,7 @@ const Storage = {
       throw new Error('You already have a pending or approved leave request overlapping these dates.');
     }
 
-    // Quota check
+    // Quota validation
     const balance = this.getEmployeeLeaveBalance(employeeId);
     if (days > balance.remaining) {
       throw new Error(`Insufficient leave balance. You requested ${days} day(s) but only have ${balance.remaining} day(s) left.`);
@@ -315,6 +309,7 @@ const Storage = {
     return newLeave;
   },
 
+  // Update status and reviewer remark for a leave application
   updateLeaveStatus(leaveId, status, comment = '') {
     const leaves = this.getLeaves();
     const index = leaves.findIndex(l => String(l.id) === String(leaveId));
@@ -328,20 +323,16 @@ const Storage = {
     return leaves[index];
   },
 
-  // ── PAYSLIP CALCULATION ──
-  /**
-   * Business Rules (Section 3 & 4):
-   * Per day = monthly salary ÷ working days in the month
-   * Deduction = per day × (absent days + 0.5 × half days)
-   * Net = salary − deduction
-   */
+  // ----------------------------------------------------
+  // 5. Monthly Payroll Calculation & Payslip Engine
+  // ----------------------------------------------------
   calculatePayslip(employeeId, year, month) {
     const user = this.getUserById(employeeId);
     if (!user) throw new Error('Employee not found');
 
     const salary = Number(user.salary) || 0;
 
-    // Calculate total working days in that month (skipping weekends)
+    // Calculate total working days in target month (excluding weekends)
     const startDate = new Date(year, month - 1, 1);
     const endDate = new Date(year, month, 0); // Last day of month
     let totalWorkingDays = 0;
@@ -358,7 +349,7 @@ const Storage = {
     // Month prefix: YYYY-MM
     const monthPrefix = `${year}-${String(month).padStart(2, '0')}`;
 
-    // Get attendance records for this employee in this month
+    // Query attendance records for employee in this month
     const empAttendance = this.getAttendance().filter(
       r => String(r.employeeId) === String(employeeId) && r.date.startsWith(monthPrefix)
     );
@@ -367,7 +358,7 @@ const Storage = {
     const lateCount = empAttendance.filter(r => r.status === 'late').length;
     const halfDayCount = empAttendance.filter(r => r.status === 'half_day').length;
 
-    // Approved leaves in this month
+    // Query approved leaves within this month
     const approvedLeaves = this.getLeaves().filter(l => {
       return String(l.employeeId) === String(employeeId) &&
         l.status === 'approved' &&
@@ -413,7 +404,9 @@ const Storage = {
     };
   },
 
-  // ── ANNOUNCEMENTS ──
+  // ----------------------------------------------------
+  // 6. Internal Company Announcements
+  // ----------------------------------------------------
   getAnnouncements() {
     const data = localStorage.getItem(STORAGE_KEYS.ANNOUNCEMENTS);
     return data ? JSON.parse(data) : [];
@@ -435,7 +428,9 @@ const Storage = {
     return newAnn;
   },
 
-  // ── SESSION ──
+  // ----------------------------------------------------
+  // 7. Active Session Management
+  // ----------------------------------------------------
   getSession() {
     const data = localStorage.getItem(STORAGE_KEYS.SESSION);
     return data ? JSON.parse(data) : null;
@@ -449,7 +444,9 @@ const Storage = {
     localStorage.removeItem(STORAGE_KEYS.SESSION);
   },
 
-  // ── RESET SYSTEM ──
+  // ----------------------------------------------------
+  // 8. System Database Reset
+  // ----------------------------------------------------
   resetAllData() {
     Object.values(STORAGE_KEYS).forEach(key => localStorage.removeItem(key));
   }

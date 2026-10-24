@@ -1,12 +1,10 @@
 /**
- * HCM Lite - Leave Management Module
- * Section 3 & 8:
- * - Apply for leave (From <= To, skip weekends, no overlap, quota check)
- * - Balance calculation (Quota - Approved days)
- * - Admin Approve / Reject with comment
+ * AMC Tech - Leave Management Module
+ * Handles leave applications, working day calculation, balance verification, and admin approval workflows.
  */
 
 const LeaveModule = {
+  // Initialize module state and UI bindings
   init(user) {
     this.user = user || Storage.getSession();
     this.isAdmin = this.user && this.user.role === 'admin';

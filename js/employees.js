@@ -1,9 +1,10 @@
 /**
- * HCM Lite - Employees Management Module
- * Section 3 & 8: Add, Edit, Delete, Search, Filter, Export to CSV
+ * AMC Tech - Employees Management Module
+ * Handles adding, editing, deleting, searching, filtering, and CSV export for staff records.
  */
 
 const EmployeeModule = {
+  // Initialize module references and render employees list
   init() {
     this.tableBody = document.getElementById('employees-table-body');
     this.searchInput = document.getElementById('search-employee');
@@ -110,7 +111,7 @@ const EmployeeModule = {
 
     let hasError = false;
 
-    // Rules verification
+    // Field validations for required values, valid email, and positive salary
     if (!name) {
       this.showError('name', 'Employee name is required.');
       hasError = true;
@@ -160,7 +161,21 @@ const EmployeeModule = {
   deleteEmployee(id) {
     const emp = Storage.getUserById(id);
     if (!emp) return;
-    if (confirm(`Are you sure you want to delete employee "${emp.name}"? This action cannot be undone.`)) {
+
+    if (typeof showConfirm === 'function') {
+      showConfirm(`Are you sure you want to permanently delete employee "${emp.name}"? This action cannot be undone.`, {
+        title: 'Delete Employee',
+        type: 'danger',
+        confirmText: 'Yes, Delete',
+        cancelText: 'Keep Employee',
+        onConfirm: () => {
+          Storage.deleteUser(id);
+          if (window.Toast) Toast.success(`Employee "${emp.name}" removed successfully.`);
+          this.render();
+          this.populateDepartments();
+        }
+      });
+    } else if (confirm(`Are you sure you want to delete employee "${emp.name}"? This action cannot be undone.`)) {
       Storage.deleteUser(id);
       this.render();
       this.populateDepartments();

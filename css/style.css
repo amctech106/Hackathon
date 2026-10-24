@@ -1,5 +1,5 @@
 /* ==========================================================================
-   HCM Lite — Saylani Hackathon Beginner Track Design System
+   AMC Tech — Human Capital Management System
    Modern Enterprise UI with Dark Mode, Glassmorphism & Print Styles
    ========================================================================== */
 
@@ -19,7 +19,7 @@
   --text-light: #94a3b8;
   --text-white: #ffffff;
 
-  /* Brand Saylani Theme */
+  /* Brand Primary Theme */
   --primary: #0284c7;
   --primary-hover: #0369a1;
   --primary-light: #e0f2fe;
@@ -972,3 +972,275 @@ img, video {
     display: inline-flex !important;
   }
 }
+
+/* ==========================================================================
+   Modern Toast Notifications & Custom Alert/Confirm Modals
+   ========================================================================== */
+.toast-container {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  z-index: 999999;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  pointer-events: none;
+  max-width: 420px;
+  width: calc(100% - 3rem);
+}
+
+.toast-item {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding: 1rem 1.15rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  color: var(--text-main);
+  box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.18), 0 8px 12px -6px rgba(0, 0, 0, 0.12);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid var(--primary);
+  position: relative;
+  overflow: hidden;
+  animation: toastSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+body.dark-mode .toast-item {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.45);
+}
+
+.toast-item.toast-success {
+  border-left-color: var(--success);
+}
+.toast-item.toast-success .toast-icon {
+  color: var(--success);
+  background: var(--success-bg);
+}
+
+.toast-item.toast-error {
+  border-left-color: var(--danger);
+}
+.toast-item.toast-error .toast-icon {
+  color: var(--danger);
+  background: var(--danger-bg);
+}
+
+.toast-item.toast-warning {
+  border-left-color: var(--warning);
+}
+.toast-item.toast-warning .toast-icon {
+  color: var(--warning);
+  background: var(--warning-bg);
+}
+
+.toast-item.toast-info {
+  border-left-color: var(--info);
+}
+.toast-item.toast-info .toast-icon {
+  color: var(--info);
+  background: var(--info-bg);
+}
+
+body.dark-mode .toast-icon {
+  filter: brightness(1.15);
+}
+
+.toast-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+.toast-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.toast-title {
+  font-weight: 700;
+  font-size: 0.92rem;
+  margin-bottom: 0.2rem;
+  color: var(--text-main);
+}
+
+.toast-message {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+.toast-close {
+  background: transparent;
+  border: none;
+  color: var(--text-light);
+  font-size: 1.25rem;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+  transition: color 0.15s ease;
+  margin-left: 0.35rem;
+}
+.toast-close:hover {
+  color: var(--text-main);
+}
+
+.toast-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.05);
+}
+.toast-progress-bar {
+  height: 100%;
+  width: 100%;
+  transform-origin: left;
+  animation: toastProgressBar linear forwards;
+}
+.toast-success .toast-progress-bar { background: var(--success); }
+.toast-error .toast-progress-bar { background: var(--danger); }
+.toast-warning .toast-progress-bar { background: var(--warning); }
+.toast-info .toast-progress-bar { background: var(--info); }
+
+@keyframes toastSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(110%) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes toastSlideOut {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(110%) scale(0.9);
+  }
+}
+
+@keyframes toastProgressBar {
+  from { transform: scaleX(1); }
+  to { transform: scaleX(0); }
+}
+
+.toast-item.toast-hiding {
+  animation: toastSlideOut 0.25s ease forwards;
+}
+
+/* ───── CUSTOM CONFIRM & ALERT MODAL ───── */
+.custom-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000000;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn 0.2s ease;
+}
+
+.custom-modal-box {
+  width: 100%;
+  max-width: 440px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+  padding: 2rem 1.75rem;
+  text-align: center;
+  animation: modalScaleUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.dark-mode .custom-modal-box {
+  background: #1e293b;
+  border-color: #334155;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.6);
+}
+
+@keyframes modalScaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.custom-modal-icon-wrap {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 1.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+}
+.custom-modal-icon-wrap.success {
+  background: var(--success-bg);
+  color: var(--success);
+  box-shadow: 0 0 0 8px rgba(16, 185, 129, 0.12);
+}
+.custom-modal-icon-wrap.danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+  box-shadow: 0 0 0 8px rgba(239, 68, 68, 0.12);
+}
+.custom-modal-icon-wrap.warning {
+  background: var(--warning-bg);
+  color: var(--warning);
+  box-shadow: 0 0 0 8px rgba(245, 158, 11, 0.12);
+}
+.custom-modal-icon-wrap.info {
+  background: var(--info-bg);
+  color: var(--info);
+  box-shadow: 0 0 0 8px rgba(59, 130, 246, 0.12);
+}
+
+.custom-modal-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.custom-modal-message {
+  font-size: 0.92rem;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 1.75rem;
+}
+
+.custom-modal-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+.custom-modal-actions .btn {
+  min-width: 120px;
+}
+

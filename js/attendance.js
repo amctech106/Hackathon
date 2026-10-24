@@ -1,15 +1,10 @@
 /**
- * HCM Lite - Attendance Management Module
- * Section 3 & Bonus:
- * - One check-in per day
- * - Check-out only after check-in
- * - Late calculation based on Admin settings + grace minutes
- * - Work hours & half-day rule (< 5 hrs = half day)
- * - Camera & Geolocation bonus check-in
- * - Export to CSV
+ * AMC Tech - Attendance Management Module
+ * Handles live clock, daily check-in, check-out, late arrivals, work hours, webcam capture, and CSV export.
  */
 
 const AttendanceModule = {
+  // Initialize user context, clock, event bindings, and UI rendering
   init(user) {
     this.user = user || Storage.getSession();
     this.isAdmin = this.user && this.user.role === 'admin';
@@ -105,7 +100,9 @@ const AttendanceModule = {
     }
   },
 
-  // ── BONUS: CAMERA CHECK-IN WITH WEBCAM PREVIEW ──
+  // ----------------------------------------------------
+  // Camera Check-In with Live Webcam Stream
+  // ----------------------------------------------------
   openCameraModal() {
     const modal = document.getElementById('camera-modal');
     const video = document.getElementById('camera-video');

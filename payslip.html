@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Monthly Payslip — HCM Lite</title>
+  <title>Monthly Payslip — AMC Tech</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -11,12 +11,12 @@
 
   <div class="app-container">
 
-    <!-- ───── SIDEBAR ───── -->
+    <!-- Navigation Sidebar -->
     <aside class="app-sidebar no-print" id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-logo"><i class="fa-solid fa-file-invoice-dollar"></i></div>
         <div>
-          <div class="sidebar-brand-name js-company-name">HCM Lite</div>
+          <div class="sidebar-brand-name js-company-name">AMC Tech</div>
           <div class="sidebar-brand-sub" id="sidebar-role-label">Payroll Portal</div>
         </div>
       </div>
@@ -39,10 +39,10 @@
       </div>
     </aside>
 
-    <!-- ───── MAIN CONTENT ───── -->
+    <!-- Payroll Calculation & Payslip View Area -->
     <main class="app-main">
 
-      <!-- Topbar -->
+      <!-- Topbar Header -->
       <header class="app-topbar no-print">
         <div class="topbar-left">
           <button type="button" id="mobile-menu-btn" class="btn btn-icon btn-outline mobile-menu-btn" style="display: none;">
@@ -108,11 +108,11 @@
           </div>
         </div>
 
-        <!-- ───── PRINTABLE PAYSLIP CONTAINER ───── -->
+        <!-- Printable Payslip Document -->
         <div class="payslip-paper" id="payslip-document">
           <div class="payslip-header">
             <div>
-              <h2 style="font-size: 1.5rem; color: #0284c7; margin-bottom: 0.25rem;" class="js-company-name">HCM Lite</h2>
+              <h2 style="font-size: 1.5rem; color: #0284c7; margin-bottom: 0.25rem;" class="js-company-name">AMC Tech</h2>
               <p style="color: #64748b; font-size: 0.85rem; margin: 0;">Employee Monthly Salary Statement</p>
             </div>
             <div style="text-align: right;">
@@ -239,15 +239,17 @@
 
   </div>
 
+  <script src="js/toast.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/helper.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. Guard (Accessible to either role)
+      // Role Authentication Guard: allows both Admin and Employee
       const user = Auth.guard('any');
       if (!user) return;
 
+      // Initialize global user interface and Smart Helper
       Auth.initUI();
       SmartHelper.init(user);
 
@@ -262,6 +264,7 @@
       const adminEmpSelect = document.getElementById('admin-employee-select-wrapper');
       const empSelect = document.getElementById('select-employee');
 
+      // Populate employee selector for administrator view
       if (user.role === 'admin') {
         adminEmpSelect.classList.remove('hidden');
         const employees = Storage.getUsers().filter(u => u.role === 'employee');
@@ -273,7 +276,7 @@
         }
       }
 
-      // Generate button listener
+      // Event listener for generating payslip calculations
       document.getElementById('btn-generate-slip').addEventListener('click', () => {
         let targetId = user.id;
         if (user.role === 'admin') {
@@ -286,13 +289,14 @@
         generatePayslip(targetId);
       });
 
-      // Auto-generate on load if employee or if employees exist
+      // Automatically generate payslip on page load
       if (user.role === 'employee') {
         generatePayslip(user.id);
       } else if (empSelect.value) {
         generatePayslip(empSelect.value);
       }
 
+      // Mobile responsive sidebar toggle
       const mobBtn = document.getElementById('mobile-menu-btn');
       const sidebar = document.getElementById('sidebar');
       if (mobBtn && sidebar) {

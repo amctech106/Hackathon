@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>HCM Lite — Sign In & Setup</title>
+  <title>AMC Tech — Sign In & Setup</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
   <style>
@@ -64,15 +64,16 @@
   <div class="auth-wrapper">
     <div class="auth-card">
 
+      <!-- Application Branding Header -->
       <div class="auth-brand">
         <div class="auth-logo-icon"><i class="fa-solid fa-users-gear"></i></div>
         <div>
-          <h2 style="font-size: 1.35rem; line-height: 1.1;">HCM Lite</h2>
-          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Saylani Hackathon</span>
+          <h2 style="font-size: 1.35rem; line-height: 1.1;">AMC Tech</h2>
+          <span style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase;">Human Capital Management</span>
         </div>
       </div>
 
-      <!-- ───── STATE 1: FIRST-RUN SETUP FORM ───── -->
+      <!-- First-Run Company & Admin Setup Section -->
       <div id="first-run-section" class="hidden">
         <div class="auth-header">
           <h1>First-Run Setup</h1>
@@ -82,7 +83,7 @@
         <form id="setup-form">
           <div class="form-group">
             <label class="form-label">Company Name *</label>
-            <input type="text" id="setup-company-name" class="form-control" placeholder="e.g. Saylani Welfare International Trust" required>
+            <input type="text" id="setup-company-name" class="form-control" placeholder="e.g. AMC Tech" value="AMC Tech" required>
             <span class="field-error" id="err-setup-company"></span>
           </div>
 
@@ -116,7 +117,7 @@
 
           <div class="form-group">
             <label class="form-label">Admin Email *</label>
-            <input type="email" id="setup-admin-email" class="form-control" placeholder="admin@saylani.org" required>
+            <input type="email" id="setup-admin-email" class="form-control" placeholder="admin@amctech.com" required>
             <span class="field-error" id="err-setup-email"></span>
           </div>
 
@@ -132,7 +133,7 @@
         </form>
       </div>
 
-      <!-- ───── STATE 2: REGULAR LOGIN FORM ───── -->
+      <!-- User Authentication / Login Section -->
       <div id="login-section" class="hidden">
         <div class="auth-header">
           <h1 id="login-company-title">Sign In</h1>
@@ -160,8 +161,7 @@
         </form>
 
         <div style="margin-top: 1.75rem; padding-top: 1.25rem; border-top: 1px solid var(--border-light); font-size: 0.82rem; color: var(--text-muted); text-align: center;">
-          <p><strong>Note for Judges / Reviewers:</strong></p>
-          <p style="margin-top: 0.35rem;">Log in as <strong>Admin</strong> to manage staff & approvals, or as registered <strong>Employee</strong> for self-service.</p>
+          <p>Log in as <strong>Admin</strong> to manage staff & approvals, or as registered <strong>Employee</strong> for self-service.</p>
           <div style="margin-top: 1rem;">
             <button type="button" id="btn-reset-app" class="btn btn-sm btn-outline text-danger">
               <i class="fa-solid fa-arrow-rotate-left mr-1"></i> Reset App Data (Fresh Start)
@@ -173,10 +173,12 @@
     </div>
   </div>
 
+  <script src="js/toast.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/auth.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Check setup status: show first-run form if not configured, otherwise show login
       const isSetup = Storage.isSetupComplete();
       const firstRunSec = document.getElementById('first-run-section');
       const loginSec = document.getElementById('login-section');
@@ -185,7 +187,7 @@
         firstRunSec.classList.remove('hidden');
         loginSec.classList.add('hidden');
       } else {
-        // If already logged in, redirect
+        // Redirect if an active session already exists
         const session = Storage.getSession();
         if (session) {
           window.location.href = session.role === 'admin' ? 'admin.html' : 'employee.html';
@@ -200,12 +202,12 @@
         firstRunSec.classList.add('hidden');
       }
 
-      // Handle First-Run Setup
+      // Handle First-Run Setup form submission
       const setupForm = document.getElementById('setup-form');
       if (setupForm) {
         setupForm.addEventListener('submit', (e) => {
           e.preventDefault();
-          const companyName = document.getElementById('setup-company-name').value.trim();
+          const companyName = document.getElementById('setup-company-name').value.trim() || 'AMC Tech';
           const startTime = document.getElementById('setup-start-time').value;
           const graceMinutes = parseInt(document.getElementById('setup-grace-minutes').value) || 15;
           const leaveQuota = parseInt(document.getElementById('setup-leave-quota').value) || 20;
@@ -214,7 +216,7 @@
           const adminEmail = document.getElementById('setup-admin-email').value.trim().toLowerCase();
           const adminPassword = document.getElementById('setup-admin-password').value;
 
-          // Save Company
+          // Save Company Profile
           Storage.saveCompany({
             name: companyName,
             startTime,
@@ -224,7 +226,7 @@
             createdAt: new Date().toISOString()
           });
 
-          // Create Admin User
+          // Create Master Administrator Account
           const adminUser = Storage.addUser({
             name: adminName,
             email: adminEmail,
@@ -238,12 +240,14 @@
           // Set active session
           Storage.setSession(adminUser);
 
-          alert('Setup completed successfully! Welcome to HCM Lite.');
-          window.location.href = 'admin.html';
+          Toast.success('Setup completed successfully! Welcome to AMC Tech.');
+          setTimeout(() => {
+            window.location.href = 'admin.html';
+          }, 1200);
         });
       }
 
-      // Handle Login
+      // Handle Login form submission
       const loginForm = document.getElementById('login-form');
       if (loginForm) {
         loginForm.addEventListener('submit', (e) => {
@@ -253,21 +257,34 @@
 
           try {
             const user = Auth.login(email, password);
-            window.location.href = user.role === 'admin' ? 'admin.html' : 'employee.html';
+            Toast.success(`Welcome back, ${user.name}!`);
+            setTimeout(() => {
+              window.location.href = user.role === 'admin' ? 'admin.html' : 'employee.html';
+            }, 800);
           } catch (err) {
             document.getElementById('err-login-password').textContent = err.message;
+            Toast.error(err.message);
           }
         });
       }
 
-      // Handle Reset Data
+      // Handle Reset All App Data with custom CSS confirm dialog
       const resetBtn = document.getElementById('btn-reset-app');
       if (resetBtn) {
         resetBtn.addEventListener('click', () => {
-          if (confirm('Are you sure you want to completely clear localStorage? The app will return to first-run setup.')) {
-            Storage.resetAllData();
-            window.location.reload();
-          }
+          showConfirm('Are you sure you want to completely clear localStorage? The application will return to first-run setup.', {
+            title: 'Reset Application Data',
+            type: 'danger',
+            confirmText: 'Yes, Wipe Everything',
+            cancelText: 'Cancel',
+            onConfirm: () => {
+              Storage.resetAllData();
+              Toast.info('All data wiped. Reloading...');
+              setTimeout(() => {
+                window.location.reload();
+              }, 800);
+            }
+          });
         });
       }
     });

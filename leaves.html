@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leave Requests — HCM Lite</title>
+  <title>Leave Requests — AMC Tech</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -11,12 +11,12 @@
 
   <div class="app-container">
 
-    <!-- ───── SIDEBAR ───── -->
+    <!-- Navigation Sidebar -->
     <aside class="app-sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-logo"><i class="fa-solid fa-users-gear"></i></div>
         <div>
-          <div class="sidebar-brand-name js-company-name">HCM Lite</div>
+          <div class="sidebar-brand-name js-company-name">AMC Tech</div>
           <div class="sidebar-brand-sub">Admin Workspace</div>
         </div>
       </div>
@@ -61,10 +61,10 @@
       </div>
     </aside>
 
-    <!-- ───── MAIN CONTENT ───── -->
+    <!-- Main Content Area -->
     <main class="app-main">
 
-      <!-- Topbar -->
+      <!-- Topbar Header -->
       <header class="app-topbar">
         <div class="topbar-left">
           <button type="button" id="mobile-menu-btn" class="btn btn-icon btn-outline mobile-menu-btn" style="display: none;">
@@ -128,7 +128,7 @@
 
   </div>
 
-  <!-- ───── DECISION MODAL (APPROVE / REJECT) ───── -->
+  <!-- Leave Decision (Approve / Reject) Modal -->
   <div id="leave-decision-modal" class="modal-backdrop hidden">
     <div class="modal-content">
       <div class="modal-header">
@@ -157,19 +157,23 @@
     </div>
   </div>
 
+  <script src="js/toast.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/leave.js"></script>
   <script src="js/helper.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
+      // Role Authentication Guard: ensure only administrator has access
       const user = Auth.guard('admin');
       if (!user) return;
 
+      // Initialize UI, Smart Helper, and Leave Approvals Module
       Auth.initUI();
       SmartHelper.init(user);
       LeaveModule.init(user);
 
+      // Mobile responsive sidebar toggle
       const mobBtn = document.getElementById('mobile-menu-btn');
       const sidebar = document.getElementById('sidebar');
       if (mobBtn && sidebar) {

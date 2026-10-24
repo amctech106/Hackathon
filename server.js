@@ -36,5 +36,5 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`HCM Lite running at http://localhost:${PORT}`);
+  console.log(`AMC Tech running at http://localhost:${PORT}`);
 });

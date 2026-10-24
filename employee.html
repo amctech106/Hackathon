@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Employee Portal — HCM Lite</title>
+  <title>Employee Portal — AMC Tech</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -11,12 +11,12 @@
 
   <div class="app-container">
 
-    <!-- ───── SIDEBAR ───── -->
+    <!-- Navigation Sidebar -->
     <aside class="app-sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-logo"><i class="fa-solid fa-user-tie"></i></div>
         <div>
-          <div class="sidebar-brand-name js-company-name">HCM Lite</div>
+          <div class="sidebar-brand-name js-company-name">AMC Tech</div>
           <div class="sidebar-brand-sub">Self-Service Portal</div>
         </div>
       </div>
@@ -47,10 +47,10 @@
       </div>
     </aside>
 
-    <!-- ───── MAIN CONTENT ───── -->
+    <!-- Main Employee Workspace Area -->
     <main class="app-main">
 
-      <!-- Topbar -->
+      <!-- Topbar Header -->
       <header class="app-topbar">
         <div class="topbar-left">
           <button type="button" id="mobile-menu-btn" class="btn btn-icon btn-outline mobile-menu-btn" style="display: none;">
@@ -217,7 +217,7 @@
 
   </div>
 
-  <!-- ───── APPLY LEAVE MODAL ───── -->
+  <!-- Leave Application Modal -->
   <div id="leave-modal" class="modal-backdrop hidden">
     <div class="modal-content">
       <div class="modal-header">
@@ -266,7 +266,7 @@
     </div>
   </div>
 
-  <!-- ───── BONUS: CAMERA WEBCAM CHECK-IN MODAL ───── -->
+  <!-- Camera Face Check-In Modal -->
   <div id="camera-modal" class="modal-backdrop hidden">
     <div class="modal-content" style="max-width: 480px;">
       <div class="modal-header">
@@ -294,6 +294,7 @@
     </div>
   </div>
 
+  <script src="js/toast.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/attendance.js"></script>
@@ -301,32 +302,34 @@
   <script src="js/helper.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. Guard (Only Employee)
+      // Role Authentication Guard: ensure only employee can access
       const user = Auth.guard('employee');
       if (!user) return;
 
+      // Initialize UI, Smart Helper, Attendance listeners, and Leave module
       Auth.initUI();
       SmartHelper.init(user);
       AttendanceModule.init(user);
       LeaveModule.init(user);
 
-      // 2. Personal info
+      // Display personal salary and policy timing
       document.getElementById('emp-monthly-salary').textContent = `PKR ${Number(user.salary || 0).toLocaleString()}`;
       const comp = Storage.getCompany();
       if (comp) {
         document.getElementById('stat-policy-timing').textContent = `${comp.startTime || '09:00'} (${comp.graceMinutes || 15}m grace)`;
       }
 
-      // 3. Apply leave modal triggers
+      // Initialize leave application modal trigger
       const openLeaveBtn = document.getElementById('btn-open-leave-modal');
       const leaveModal = document.getElementById('leave-modal');
       if (openLeaveBtn && leaveModal) {
         openLeaveBtn.addEventListener('click', () => leaveModal.classList.remove('hidden'));
       }
 
-      // 4. Render Announcements
+      // Load company announcements feed
       renderEmployeeAnnouncements();
 
+      // Mobile responsive sidebar toggle
       const mobBtn = document.getElementById('mobile-menu-btn');
       const sidebar = document.getElementById('sidebar');
       if (mobBtn && sidebar) {

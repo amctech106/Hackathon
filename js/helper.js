@@ -1,12 +1,10 @@
 /**
- * HCM Lite - Smart Helper (Data-driven AI Touch)
- * Answers questions instantly using real localStorage data.
- * Adheres strictly to role permissions:
- * - Admin gets company-wide answers
- * - Employee gets ONLY their own records
+ * AMC Tech - Smart Assistant Module
+ * Natural language query assistant responding from live system records.
  */
 
 const SmartHelper = {
+  // Initialize AI assistant instance
   init(user) {
     this.user = user || Storage.getSession();
     this.isAdmin = this.user && this.user.role === 'admin';
@@ -14,6 +12,7 @@ const SmartHelper = {
     this.bindEvents();
   },
 
+  // Render floating chat drawer and prompt suggestions
   renderWidget() {
     const existing = document.getElementById('smart-helper-container');
     if (existing) existing.remove();
@@ -49,7 +48,7 @@ const SmartHelper = {
           <div class="helper-header-info">
             <span class="helper-bot-avatar"><i class="fa-solid fa-robot"></i></span>
             <div>
-              <div class="helper-title">HCM Smart Helper</div>
+              <div class="helper-title">AMC Tech Assistant</div>
               <div class="helper-subtitle">${this.isAdmin ? 'Company Intelligence' : 'Personal Self-Service'}</div>
             </div>
           </div>
@@ -62,7 +61,7 @@ const SmartHelper = {
           <div class="helper-msg bot">
             <div class="msg-bubble">
               Assalam-o-Alaikum <strong>${this.user ? this.user.name : 'there'}</strong>! 👋<br>
-              I am your HCM Smart Helper. Ask me anything about attendance, leaves, or company data!
+              I am your AMC Tech Assistant. Ask me anything about attendance, leaves, or company data!
             </div>
           </div>
         </div>

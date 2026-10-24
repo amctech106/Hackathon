@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard — HCM Lite</title>
+  <title>Admin Dashboard — AMC Tech</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -12,12 +12,12 @@
 
   <div class="app-container">
 
-    <!-- ───── SIDEBAR ───── -->
+    <!-- Navigation Sidebar -->
     <aside class="app-sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-logo"><i class="fa-solid fa-users-gear"></i></div>
         <div>
-          <div class="sidebar-brand-name js-company-name">HCM Lite</div>
+          <div class="sidebar-brand-name js-company-name">AMC Tech</div>
           <div class="sidebar-brand-sub">Admin Workspace</div>
         </div>
       </div>
@@ -62,10 +62,10 @@
       </div>
     </aside>
 
-    <!-- ───── MAIN CONTENT ───── -->
+    <!-- Main Dashboard Area -->
     <main class="app-main">
 
-      <!-- Topbar -->
+      <!-- Topbar Navigation -->
       <header class="app-topbar">
         <div class="topbar-left">
           <button type="button" id="mobile-menu-btn" class="btn btn-icon btn-outline mobile-menu-btn" style="display: none;">
@@ -207,28 +207,30 @@
 
   </div>
 
+  <script src="js/toast.js"></script>
   <script src="js/storage.js"></script>
   <script src="js/auth.js"></script>
   <script src="js/attendance.js"></script>
   <script src="js/helper.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // 1. Guard page (Only Admin)
+      // Role Authentication Guard: ensure only administrator has access
       const user = Auth.guard('admin');
       if (!user) return;
 
+      // Initialize global user interface, AI helper, and attendance listeners
       Auth.initUI();
       SmartHelper.init(user);
       AttendanceModule.init(user);
 
-      // 2. Compute Dashboard KPIs
+      // Compute and display administrative KPIs and attendance distribution
       updateDashboardStats();
 
-      // 3. Announcements
+      // Load and initialize company announcement features
       renderAnnouncements();
       initAnnouncementHandlers(user);
 
-      // 4. Responsive Mobile menu
+      // Mobile responsive sidebar toggle
       const mobBtn = document.getElementById('mobile-menu-btn');
       const sidebar = document.getElementById('sidebar');
       if (mobBtn && sidebar) {
@@ -236,6 +238,7 @@
       }
     });
 
+    // Calculates real-time employee counts, daily attendance, late flags, and pending leaves
     function updateDashboardStats() {
       const today = Storage.getTodayString();
       const employees = Storage.getUsers().filter(u => u.role === 'employee');
@@ -251,14 +254,14 @@
 
       const absent = Math.max(0, totalEmp - (todayAtt.length + onLeaveToday));
 
-      // Update KPI DOM
+      // Update KPI DOM Elements
       document.getElementById('kpi-total-employees').textContent = totalEmp;
       document.getElementById('kpi-today-present').textContent = present;
       document.getElementById('kpi-today-late').textContent = late;
       document.getElementById('kpi-today-leave').textContent = onLeaveToday;
       document.getElementById('kpi-pending-leaves').textContent = pendingLeaves;
 
-      // Update Chart.js (Bonus)
+      // Render Attendance Chart Visualization
       initAttendanceChart(present, late, onLeaveToday, absent);
     }
 

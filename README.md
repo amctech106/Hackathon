@@ -1,36 +1,36 @@
-# HCM Lite — Saylani Hackathon (Beginner Track)
+# AMC Tech — Human Capital Management System
 
-> **Modern, AI-Assisted Human Capital Management Web App**  
+> **Modern, AI-Assisted Human Capital Management Web Application**  
 > Built strictly with **HTML5, CSS3, Vanilla JavaScript (ES6+), and browser `localStorage`**.  
-> **Zero Frameworks • Zero Backend • No Preloaded/Dummy Data**
+> **Zero Frameworks • Zero Backend • Clean Local Storage Architecture**
 
 ---
 
-## 🌟 Live Demo & Judging Guide (5-Minute Walkthrough)
+## 🌟 Application Walkthrough & User Guide
 
-As specified in the hackathon brief, the application **starts 100% empty**. Follow these simple steps during judging:
+The application begins with a clean state on first launch:
 
 ### Step 1: First-Run Setup (`index.html`)
 1. Open [`index.html`](index.html) in any modern browser.
-2. Because no company exists yet, the **First-Run Setup** screen appears automatically.
+2. Because no company profile exists yet, the **First-Run Setup** screen appears automatically.
 3. Enter your company information:
-   - **Company Name**: e.g. *Saylani Welfare International Trust*
+   - **Company Name**: *AMC Tech*
    - **Office Start Time**: `09:00`
    - **Grace Minutes**: `15`
    - **Annual Leave Quota**: `20` Days
-   - **Admin Name, Email & Password**: Create the master administrator credentials.
+   - **Admin Name, Email & Password**: Create the master administrator credentials (e.g. `admin@amctech.com`).
 4. Click **Complete Setup & Launch**. You are immediately logged in to the **Admin Dashboard**!
 
 ### Step 2: Register Employees (`employees.html`)
 1. Go to **Manage Employees** in the sidebar.
 2. Click **+ Add Employee**.
-3. Create 1 or 2 employees (e.g., Name: *Ahmed Raza*, Email: *ahmed@saylani.org*, Password: *1234*, Department: *Engineering*, Salary: *80000*).
-4. Notice that registering an employee automatically creates their credentials!
+3. Create 1 or 2 employees (e.g., Name: *Ahmed Raza*, Email: *ahmed@amctech.com*, Password: *1234*, Department: *Engineering*, Salary: *80000*).
+4. Registering an employee automatically sets up their login credentials.
 5. Optional: Click **Export CSV** to download employee data.
 
 ### Step 3: Employee Self-Service Check-In & Leave (`employee.html`)
 1. Click **Logout** from the Admin dashboard.
-2. Log in using the employee credentials you just created (*ahmed@saylani.org* / *1234*).
+2. Log in using the employee credentials you just created (*ahmed@amctech.com* / *1234*).
 3. On the **Employee Dashboard**:
    - View the **Live Digital Clock** and office timing policy.
    - Click **Check In** (or click **Camera Check-In** for bonus webcam face verification!).
@@ -104,7 +104,7 @@ Click the floating **AI Assistant** button at the bottom-right of either dashboa
 
 ---
 
-## 🎁 Bonus Points Implemented (+10)
+## 🚀 Advanced Key Features Implemented
 1. **Camera Web Check-In**: Live webcam video stream via `navigator.mediaDevices.getUserMedia()` with selfie check-in confirmation.
 2. **Chart.js Attendance Analytics**: Real-time interactive Doughnut chart of today's attendance distribution.
 3. **CSV Data Export**: One-click export for both Employee Directory and Daily Attendance Logs.
@@ -114,5 +114,5 @@ Click the floating **AI Assistant** button at the bottom-right of either dashboa
 
 ---
 
-### Saylani Hackathon — 24 October 2026
-**Zaitoon Ashraf IT Park**
+### AMC Tech — Human Capital Management
+**Powered by Antigravity IDE**
