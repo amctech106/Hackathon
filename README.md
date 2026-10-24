@@ -115,4 +115,4 @@ Click the floating **AI Assistant** button at the bottom-right of either dashboa
 ---
 
 ### AMC Tech — Human Capital Management
-**Powered by Antigravity IDE**
+
